@@ -158,15 +158,14 @@ void led_bar_clear()
 
 void led_bar(unsigned char n, unsigned char c, unsigned char dir)
 {
-	int i = 0;
+	volatile int i = 0;
 	led_bar_clear();
 	if (n < 0) n = 0;
 	else if (n > 6) n = 6;
-	while (i < n)
+	for(i = 0; i < n; i++)
 	{	
 		if (dir > 0) led_set(5-i, c);
 		else led_set(i, c);
-		i++;
 	}
 	led_push();
 }

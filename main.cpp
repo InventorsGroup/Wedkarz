@@ -19,27 +19,15 @@ int main(void)
 	led_init();
 	pot_init();
 	button_init();
-
-	sei();
-	
+	led_clear();
+	led_push();
 	led_power(100);
 	
-	led_set(9, 1);
-	led_push();
-   
-   while(1)
-   {     		
-		x = adc[7]/160;
+	sei();	
+	
+	while(1)
+	{     
 
-		 if (x != x_prev) 
-		{
-			led_set(7, 1);
-			led_push();
-			_delay_ms(50);
-			led_set(7, 0);
-			led_push();
-			led_bar(x, 6, 1);
-		}
-		x_prev = x;
-   }  
+	
+	}  
  }
