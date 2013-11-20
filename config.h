@@ -24,14 +24,12 @@
 #define BTNLED_DDR DDRD
 
 //ADC Channels
-#define NC 4
-#define POT1 7
+#define POT1 0
 #define POT2 1
-#define POT3 2
-#define FOTO1 5
-#define FOTO2 6
-#define HALL1 0
-#define HALL2 3
+#define POT3 4
+#define FOTO1 2
+#define FOTO2 3
+
 
 //Buttons
 #define B1_PORT PORTD

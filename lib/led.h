@@ -6,6 +6,9 @@
 /*
 Intializes LEDs
 */
+
+extern unsigned volatile char COLOR;
+
 void led_init();
 
 /*

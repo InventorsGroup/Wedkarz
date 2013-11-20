@@ -9,6 +9,8 @@
 			3
 		   ...
 */
+
+unsigned volatile char COLOR = 1;
 	
 volatile static unsigned char led_pwr = 100;	
 volatile static unsigned char led_button_pwr = 100;

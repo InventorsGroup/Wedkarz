@@ -1,5 +1,6 @@
 #include "button.h"
 
+unsigned volatile char SENSIVITY = 0;
 
 void button_init()
 {
@@ -62,7 +63,7 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 	kon2 = KONTAKTR_TOP;	
 	
 
-	if(pos2 > SENSIVITY)
+	if(pos2 > SENSIVITY*2)
 	{
 		 pos2 = 0;
 			 
