@@ -13,8 +13,7 @@ volatile unsigned int adc[8];
 
 int main(void) 
  {  
-	int x[3];
-	int x_prev[3];
+	int  x_prev[3];
 	
 	led_init();
 	pot_init();
@@ -27,30 +26,29 @@ int main(void)
 	
 	_delay_ms(30);
 	
-	x_prev[0] = adc[POT1]/160;
-	x_prev[1] = adc[POT2]/160;
+	x_prev[0] = (adc[POT1]/160)+1;
+	x_prev[1] = 7-adc[POT2]/160;
 	x_prev[2] = adc[POT3]/160;
 	
 	while(1)
 	{     
-		x[0] = adc[POT1]/160;
+		COLOR = (adc[POT1]/160)+1;
 
-		if (x[0] != x_prev[0]) 
+		if (COLOR != x_prev[0]) 
 		{			
 			led_bar(6, x[0]+1, 0);
-			COLOR = x[0]+1;
 		}
-		x_prev[0] = x[0];
+		x_prev[0] = COLOR;
 		
 
-		x[1] = adc[POT2]/160;
-
-		if (x[1] != x_prev[1]) 
+		SENSIVITY = 7-adc[POT2]/160;
+		
+		if (SENSIVITY != x_prev[1]) 
 		{			
 			led_bar(x[1], COLOR, 1);
-			SENSIVITY = 7-x[1];
+			
 		}
-		x_prev[1] = x[1];
+		x_prev[1] = SENSIVITY;
 	
 	}  
  }
