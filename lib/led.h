@@ -8,7 +8,7 @@ Intializes LEDs
 */
 
 extern unsigned volatile char COLOR;
-
+extern unsigned volatile char BRIGHTNESS;
 void led_init();
 
 /*

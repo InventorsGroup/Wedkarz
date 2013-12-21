@@ -8,6 +8,6 @@ volatile unsigned extern int adc[8];
 
 
 
-SIGNAL (SIG_ADC);
+SIGNAL (ADC_vect);
 
 void pot_init();

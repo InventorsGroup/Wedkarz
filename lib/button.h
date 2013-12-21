@@ -3,14 +3,11 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "led.h"
-
-#define TOP_BTN (!(PIND & (1<<PD7)))
-#define CENTER_BTN (!(PINB & (1<<PB0)))
-#define KONTAKTR_TOP (!(PINC & (1<<PC0)))
-#define KONTAKTR_BOT (!(PINC & (1<<PC3)))
+#include "power.h"
 
 extern unsigned volatile char SENSIVITY;
 void button_init();
+ISR(TIMER0_COMPA_vect);
 ISR(INT1_vect);
 ISR(PCINT0_vect);
 ISR(PCINT1_vect);

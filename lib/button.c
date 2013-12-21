@@ -1,6 +1,6 @@
 #include "button.h"
 
-unsigned volatile char SENSIVITY = 0;
+unsigned volatile char SENSIVITY = 1;
 
 void button_init()
 {
@@ -14,23 +14,126 @@ void button_init()
 	PORTD |= (1 << PD2) | (1 << PD3) | (1<< PD7);
 	
 	
-	EICRA |= (1 << ISC11);
-	EIMSK |= (1 << INT1);
 	PCICR |= (1 << PCIE1) | (1 << PCIE0) | (1 << PCIE2);
 	PCMSK0 |= (1 << PCINT0);
 	PCMSK1 |= (1 << PCINT11) | (1 << PCINT8);
 	PCMSK2 |= (1 << PCINT23);
+
+	TCCR0A |= (1 << WGM01);
+	//TCCR0B |= (1 << CS00) | (1 << CS02);
+	TIMSK0 |= (1 << OCIE0A);
+	OCR0A = 255;
 }
 
+volatile unsigned char center_btn_counter = 0;
+volatile unsigned char top_btn_counter = 0;
+ISR(TIMER0_COMPA_vect)
+{
+	if(TOP_BTN && top_btn_counter > 0)
+	{
+		top_btn_counter++;
 
-ISR(INT1_vect)
-{	
-	
+		if(top_btn_counter > 30)
+		{
+			GO_TO_POWER_DOWN = 1;
+			top_btn_counter = 0;
+		}
+	}
+	else
+		top_btn_counter = 0;
+
+	if(center_btn_counter > 0)
+	{
+		if(CENTER_BTN)
+		{
+			center_btn_counter++;
+
+			if(center_btn_counter > 30)
+			{
+				NIGHT = NIGHT == 0 ? 1 : 0;
+
+				if(NIGHT > 0) led_set(6, 5);
+				led_set(7, 1);
+				led_push();
+				_delay_ms(300);
+				if(NIGHT > 0) led_set(6, 0);
+				led_set(7, 0);
+				led_push();
+				_delay_ms(300);
+				if(NIGHT > 0) led_set(6, 5);
+				led_set(7, 1);
+				led_push();
+				_delay_ms(300);
+				if(NIGHT > 0) led_set(6, 0);
+				led_set(7, 0);
+				led_push();
+				center_btn_counter = 0;
+			}
+		}
+		else if(center_btn_counter > 1 && center_btn_counter < 10)
+		{
+			ANTI_THEFT = ANTI_THEFT == 0 ? 1 : 0;
+
+			if(ANTI_THEFT > 0)
+			{
+				led_set(6, 1);
+				led_push();
+				_delay_ms(300);
+				led_set(6, 2);
+				led_push();
+				_delay_ms(300);
+				led_set(6, 0);
+				led_push();
+				_delay_ms(300);
+			}
+			else
+			{
+				led_set(6, 3);
+				led_push();
+				_delay_ms(300);
+				led_set(6, 0);
+				led_push();
+			}
+
+			center_btn_counter = 0;
+		}
+	}
+
 }
+
 
 ISR(PCINT0_vect) // CENTER_BTN
 {
-	led_bar(3, 5, 0);	
+	
+	if(CENTER_BTN)
+	{
+		if(STATE == 1)
+			center_btn_counter = 1;
+		else if(STATE == 2 && CONF_ENTER == 0)
+		{
+			led_set(8, 1);
+			led_push();
+			_delay_ms(200);
+			led_set(8, 0);
+			led_push();
+			_delay_ms(200);
+			led_set(8, 1);
+			led_push();
+			_delay_ms(200);
+			led_set(8, 0);
+			led_push();
+			_delay_ms(200);
+			//TUTAJ ZAPIS DO EEPROMU
+			GO_TO_POWER_DOWN = 1;
+		}
+		else if(CONF_ENTER == 1)
+		{
+			_delay_ms(500);
+			CONF_ENTER = 0;
+		}
+
+
+	}
 }
 
 
@@ -43,6 +146,9 @@ unsigned volatile char pos2 = 0;
 
 ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 {
+	if(STATE != 1)
+		return;
+	
 	if(KONTAKTR_BOT && !KONTAKTR_TOP)
 	{
 		char dirprev = dir;
@@ -75,10 +181,14 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 	else
 		 pos2++;	
 			 
-	led_bar(pos, 3, dir);
+	led_bar(pos, COLOR, dir);
 }
 
 ISR(PCINT2_vect) // TOP_BTN
 {
-	led_bar(3, 5, 1);	
+	if(TOP_BTN)
+	{
+		top_btn_counter = 1;
+	}
+
 }

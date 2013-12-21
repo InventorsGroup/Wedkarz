@@ -37,3 +37,8 @@
 
 #define B1_DDR DDRD
 #define B2_DDR DDRB
+
+#define TOP_BTN (!(PIND & (1<<PD7)))
+#define CENTER_BTN (!(PINB & (1<<PB0)))
+#define KONTAKTR_TOP (!(PINC & (1<<PC0)))
+#define KONTAKTR_BOT (!(PINC & (1<<PC3)))

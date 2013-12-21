@@ -11,6 +11,7 @@
 */
 
 unsigned volatile char COLOR = 1;
+unsigned volatile char BRIGHTNESS = 6;
 	
 volatile static unsigned char led_pwr = 100;	
 volatile static unsigned char led_button_pwr = 100;
@@ -21,7 +22,6 @@ volatile static unsigned char led_array[3][8] = {{0, 3, 6, 11, 12, 23, 27, 20},
 
 
 volatile static unsigned char leds[36];
-
 void led_init()
 {
 	//disable leds
@@ -43,8 +43,10 @@ void led_init()
 	
 	//Button Led PWM
 	
-	TCCR0A |= (1 << COM0B1)  | (1 << WGM02) | (1 << WGM00) ;
-	TCCR0B |= (1 << CS01) | (1 << CS00);
+	DDRD |= (1 << PD5);
+//	PORTD |= (1 << PD5);
+	//TCCR0A |= (1 << COM0B1)  | (1 << WGM02) | (1 << WGM00) ;
+	//TCCR0B |= (1 << CS01) | (1 << CS00);
 }
 
 
@@ -117,7 +119,10 @@ void led_set(unsigned char n, unsigned char color)
 		}
 		else if (n == 8) // button led exception 
 		{
-			OCR0B = color;
+			//OCR0B = color;
+			if(color > 0)PORTD |= (1 << PD5);
+			else PORTD &= ~(1 << PD5);
+
 		}
 		else if ((n == 9)) //white topled exception	
 		{
