@@ -1,5 +1,6 @@
 #include "speaker.h"
 
+unsigned volatile char spk_cnt = 0;
 unsigned volatile char FREQ = 0;
 unsigned volatile char VOL = 0;
 unsigned volatile char vol_tab[] = {15, 30, 60, 80, 90};
@@ -20,17 +21,10 @@ void set_speaker(char state)
 		TCCR2B &= ~(1 << CS22);
 }
 
-void pause(int time)
-{
-	for(int i = 0; i < time; i++)
-		_delay_ms(1);
-}
-
 void play_speaker(int length)
 {
 	set_speaker(1);
-	pause(length);
-	set_speaker(0);
+	spk_cnt = length / 50;
 }
 
 ISR(TIMER2_COMPA_vect)

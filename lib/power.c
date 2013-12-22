@@ -5,6 +5,8 @@ volatile unsigned char NIGHT = 0;
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char CONF_ENTER = 0;
+volatile unsigned char THEFT_ALARM = 0;
+
 
 void power_down()
 {	
@@ -16,6 +18,9 @@ void power_down()
     EICRA &= ~((1 << ISC11) | (1 << ISC10));
 	EIMSK |= (1 << INT1);
 	TCCR0B &= ~((1 << CS00) | (1 << CS02));
+    ANTI_THEFT = 0;
+    NIGHT = 0;
+    led_enable(0);
     sleep_cpu();
 }
 
@@ -60,4 +65,6 @@ void wake_up()
     }
 
     TCCR0B |= (1 << CS00) | (1 << CS02);
+    led_enable(1);
+
 }

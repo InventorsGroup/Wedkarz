@@ -13,8 +13,9 @@
 unsigned volatile char COLOR = 1;
 unsigned volatile char BRIGHTNESS = 6;
 	
-volatile static unsigned char led_pwr = 100;	
-volatile static unsigned char led_button_pwr = 100;
+volatile unsigned char led_pwr = 100;	
+volatile unsigned char led_button_pwr = 100;
+volatile unsigned char led_turn_off = 0;
 
 volatile static unsigned char led_array[3][8] = {{0, 3, 6, 11, 12, 23, 27, 20},
 												 {1, 4, 7, 10, 13, 17, 26, 20},
@@ -53,7 +54,12 @@ void led_init()
 void led_enable(unsigned char s)
 {
 	if (s > 0) led_power(led_pwr);
-	else led_power(0);
+	else OCR1A = 255;
+}
+
+void led_brightness_to_power()
+{
+	led_power(BRIGHTNESS * 17);
 }
 
 void led_power(unsigned char p)
@@ -149,6 +155,9 @@ void led_push()
 	}
 	LA_PORT |= (1 << LA);
 	LA_PORT &= ~(1 << LA); // Latch output
+
+	led_turn_off = 0;
+	led_enable(1);
 }
 
 void led_clear()
@@ -175,48 +184,4 @@ void led_bar(unsigned char n, unsigned char c, unsigned char dir)
 		else led_set(i, c);
 	}
 	led_push();
-}
-
-void led_test()
-{
-	for (int i = 1; i <8; i++)
-	{
-		led_set(6, i);
-		led_push();
-		_delay_ms(500);
-		for (int j = 0; j <7; j++)
-		{
-			led_set(j, i);
-			led_push();
-			_delay_ms(200);
-		}
-	for (int i = 100; i >=0; i--)
-	{
-		led_power(i);
-		_delay_ms(20);
-	}
-	for (int i = 0; i <=100; i++)
-	{
-		led_power(i);
-		_delay_ms(20);
-	}
-	led_clear();
-	}
-	
-	for (int i =0; i < 5; i++)
-	{
-		led_set(7, 1);
-		led_push();
-		_delay_ms(500);
-		led_set(7, 0);
-		led_push();
-		_delay_ms(500);
-	}
-	for (int i =0; i < 10; i++)
-	{
-		led_set(8, 10*i);
-		_delay_ms(500);
-		led_set(8, 0);
-		_delay_ms(500);
-	}
 }

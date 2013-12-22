@@ -3,10 +3,11 @@
 
 volatile static char ch = 0;
 volatile static char channels[] = {1, 2, 5, 6, 7};
+volatile unsigned int adc[8];
 
 ISR (ADC_vect)
 {
-	adc[ch] = (ADCL | (ADCH << 8));
+	adc[ch] = ADC;//(ADCL | (ADCH << 8));
 	
 	ch++;
 	if (ch > 4) ch = 0;

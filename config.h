@@ -27,7 +27,7 @@
 #define POT1 0
 #define POT2 1
 #define POT3 4
-#define FOTO1 2
+#define FOTO1 2 // anti -theft
 #define FOTO2 3
 
 

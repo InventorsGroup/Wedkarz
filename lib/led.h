@@ -9,6 +9,11 @@ Intializes LEDs
 
 extern unsigned volatile char COLOR;
 extern unsigned volatile char BRIGHTNESS;
+extern volatile unsigned char led_turn_off;
+extern volatile unsigned char led_pwr;	
+extern volatile unsigned char led_button_pwr;
+
+void led_brightness_to_power();
 void led_init();
 
 /*
@@ -57,8 +62,3 @@ c - color
 dir - direction
 */
 void led_bar(unsigned char n, unsigned char c, unsigned char dir);
-
-/*
-LED show-off
-*/
-void led_test();

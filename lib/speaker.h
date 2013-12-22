@@ -9,3 +9,4 @@ void set_speaker(char state);
 void play_speaker(int length);
 extern unsigned volatile char FREQ;
 extern unsigned volatile char VOL;
+extern unsigned volatile char spk_cnt;

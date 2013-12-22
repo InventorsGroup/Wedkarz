@@ -2,8 +2,10 @@
 #include <avr/io.h> 
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/eeprom.h>
 #include "led.h"
 #include "power.h"
+#include "pot.h"
 
 extern unsigned volatile char SENSIVITY;
 void button_init();
