@@ -20,7 +20,7 @@ void button_init()
 	PCMSK2 |= (1 << PCINT23);
 
 	TCCR0A |= (1 << WGM01);
-	//TCCR0B |= (1 << CS00) | (1 << CS02);
+	TCCR0B |= (1 << CS00) | (1 << CS02);
 	TIMSK0 |= (1 << OCIE0A);
 	OCR0A = 255;
 }
@@ -44,22 +44,24 @@ ISR(TIMER0_COMPA_vect)
 		}
 	}
 
+
 	if(STATE == 1)
 	{
-		if(NIGHT == 0 && ANTI_THEFT == 0 && led_pwr > 0)
+		if(led_pwr > 0 && NIGHT == 0 && ANTI_THEFT == 0)
 		{
 			led_turn_off++;
 
-			if(led_turn_off > 230)
+			if(led_turn_off > 150)
 			{
 				led_turn_off = 0;
+				led_bar_clear();
 				led_enable(0);
 			}
 		}
 
 		if(NIGHT > 0)
 		{
-			if(adc[FOTO2] > 50 && night_tmp < 50)
+			if(adc[FOTO2] > 900 && night_tmp < 50)
 			{
 				night_tmp++;
 			}
@@ -122,6 +124,12 @@ ISR(TIMER0_COMPA_vect)
 					led_set(7, 0);
 					led_push();
 					center_btn_counter = 0;
+
+					if(NIGHT == 0)
+					{
+						led_set(6, 0);
+						led_push();
+					}
 				}
 			}
 			else if(center_btn_counter > 1 && center_btn_counter < 10)
@@ -149,10 +157,11 @@ ISR(TIMER0_COMPA_vect)
 					led_push();
 					_delay_ms(300);
 					led_set(6, 0);
+					led_set(9,0);
 					led_push();
 
-					led_set(9, 1); // led IR
-					led_push();
+
+					THEFT_ALARM = 2;
 				}
 
 				center_btn_counter = 0;
@@ -208,7 +217,6 @@ ISR(PCINT0_vect) // CENTER_BTN
 			_delay_ms(500);
 			CONF_ENTER = 0;
 		}
-
 
 	}
 }

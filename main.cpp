@@ -116,11 +116,31 @@ int main(void)
 	while(1)
 	{     
 
-		if(GO_TO_POWER_DOWN > 0)
+		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
 			power_down();
 		}
+
+		if(THEFT_ALARM == 1)
+		{
+			set_speaker(1);
+			led_bar(6, COLOR, 1);
+			led_set(6, 1);
+			led_set(7,1);
+			led_set(8,1);
+			led_push();
+		}
+		else if(THEFT_ALARM == 2)
+		{
+			set_speaker(0);
+			led_clear();
+			led_push();
+			led_set(8, 0);
+			THEFT_ALARM  = 0;
+		}
+
+
 
 		x[0] = adc[POT1]/200; // volume or color
 		x[1] = adc[POT2]/200; // freq or brigthness

@@ -17,7 +17,7 @@ void power_down()
 
     EICRA &= ~((1 << ISC11) | (1 << ISC10));
 	EIMSK |= (1 << INT1);
-	TCCR0B &= ~((1 << CS00) | (1 << CS02));
+	//TCCR0B &= ~((1 << CS00) | (1 << CS02));
     ANTI_THEFT = 0;
     NIGHT = 0;
     led_enable(0);
@@ -38,7 +38,12 @@ void wake_up()
     STATE = 1;
     
 
+
     _delay_ms(1000);
+
+ //   TCCR0B |= (1 << CS00) | (1 << CS02);
+    led_enable(1);
+    set_speaker(0);
 
     if(CENTER_BTN)
     {
@@ -63,8 +68,5 @@ void wake_up()
     	led_bar(0,COLOR, 0);
 
     }
-
-    TCCR0B |= (1 << CS00) | (1 << CS02);
-    led_enable(1);
 
 }
