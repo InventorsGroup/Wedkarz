@@ -9,7 +9,7 @@
 void power_down();
 void wake_up();
 ISR(INT1_vect);
-extern volatile unsigned char STATE;
+extern volatile unsigned char STATUS;
 extern volatile unsigned char GO_TO_POWER_DOWN;
 extern volatile unsigned char NIGHT;
 extern volatile unsigned char ANTI_THEFT;

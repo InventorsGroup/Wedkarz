@@ -101,6 +101,7 @@ int main(void)
 	button_init();
 	led_clear();
 	led_push();
+	
 	speaker_init();
 	
 	sei();	
@@ -146,7 +147,7 @@ int main(void)
 		x[1] = adc[POT2]/200; // freq or brigthness
 		x[2] = adc[POT3]/450; // sensivity
 
-		if(STATE == 2)
+		if(STATUS == 5)
 		{
 			config_mode();
 		}

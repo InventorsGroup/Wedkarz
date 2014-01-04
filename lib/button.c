@@ -29,10 +29,12 @@ volatile unsigned char center_btn_counter = 0;
 volatile unsigned char top_btn_counter = 0;
 volatile unsigned char spk_tmp = 0;
 volatile unsigned char night_tmp = 0, night_tmp2 = 0;
+volatile unsigned int branie_counter = 0;
+volatile unsigned char branie_dir = 0;
+
 ISR(TIMER0_COMPA_vect)
 {
 	
-
 	if(spk_cnt > 0)
 	{
 		spk_tmp++;
@@ -45,9 +47,35 @@ ISR(TIMER0_COMPA_vect)
 	}
 
 
-	if(STATE == 1)
+	if(STATUS != 0 && STATUS != 5)
 	{
-		if(led_pwr > 0 && NIGHT == 0 && ANTI_THEFT == 0)
+	
+		if(branie_counter < 400)
+		{
+			branie_counter++;			
+			if(branie_dir == 0)
+			{
+				if(branie_counter % 2 == 0)
+				{
+					led_set(6, COLOR);
+					led_push();
+				}
+				else
+				{
+					led_set(6, 0);
+					led_push();
+				}
+			}			
+			if(branie_counter == 400)
+			{
+				led_set(7, 0);
+				led_set(6, 0);
+				led_push();			
+		
+			}
+		}
+	
+		if(ANTI_THEFT == 0)
 		{
 			led_turn_off++;
 
@@ -55,11 +83,10 @@ ISR(TIMER0_COMPA_vect)
 			{
 				led_turn_off = 0;
 				led_bar_clear();
-				led_enable(0);
 			}
 		}
 
-		if(NIGHT > 0)
+		if(STATUS == 2 || STATUS == 4)
 		{
 			if(adc[FOTO2] > 900 && night_tmp < 50)
 			{
@@ -106,63 +133,49 @@ ISR(TIMER0_COMPA_vect)
 
 				if(center_btn_counter > 30)
 				{
-					NIGHT = NIGHT == 0 ? 1 : 0;
+					ANTI_THEFT = ANTI_THEFT == 0 ? 1 : 0;
 
-					if(NIGHT > 0) led_set(6, 5);
-					led_set(7, 1);
-					led_push();
-					_delay_ms(300);
-					if(NIGHT > 0) led_set(6, 0);
-					led_set(7, 0);
-					led_push();
-					_delay_ms(300);
-					if(NIGHT > 0) led_set(6, 5);
-					led_set(7, 1);
-					led_push();
-					_delay_ms(300);
-					if(NIGHT > 0) led_set(6, 0);
-					led_set(7, 0);
-					led_push();
-					center_btn_counter = 0;
-
-					if(NIGHT == 0)
+					if(ANTI_THEFT > 0)
 					{
-						led_set(6, 0);
+						led_set(6, 1);
+						led_push();
+						_delay_ms(300);
+						led_set(6, 2);
+						led_set(9, 1); //led IR
 						led_push();
 					}
+					else
+					{
+						led_set(6, 3);
+						led_push();
+						_delay_ms(300);
+						led_set(6, 0);
+						led_set(9,0);
+						led_push();
+
+
+						THEFT_ALARM = 2;
+					}
+				
+					center_btn_counter = 0;
 				}
 			}
 			else if(center_btn_counter > 1 && center_btn_counter < 10)
 			{
-				ANTI_THEFT = ANTI_THEFT == 0 ? 1 : 0;
-
-				if(ANTI_THEFT > 0)
-				{
-					led_set(6, 1);
-					led_push();
-					_delay_ms(300);
-					led_set(6, 2);
-					led_push();
-					_delay_ms(300);
-					led_set(6, 0);
-					led_push();
-					_delay_ms(300);
-
-					led_set(9, 1); //led IR
-					led_push();
-				}
+			
+				if(STATUS < 4)
+					STATUS++;
 				else
+					STATUS = 1;
+			
+				for(int i = 0; i < STATUS; i++)
 				{
-					led_set(6, 3);
-					led_push();
-					_delay_ms(300);
-					led_set(6, 0);
-					led_set(9,0);
-					led_push();
-
-
-					THEFT_ALARM = 2;
+					led_set(8, 1);
+					_delay_ms(150);
+					led_set(8, 0);
+					_delay_ms(150);
 				}
+			
 
 				center_btn_counter = 0;
 			}
@@ -189,9 +202,9 @@ ISR(PCINT0_vect) // CENTER_BTN
 	
 	if(CENTER_BTN)
 	{
-		if(STATE == 1)
+		if(STATUS != 5)
 			center_btn_counter = 1;
-		else if(STATE == 2 && CONF_ENTER == 0)
+		else if(STATUS == 5 && CONF_ENTER == 0)
 		{
 			led_set(8, 1);
 			led_push();
@@ -204,7 +217,7 @@ ISR(PCINT0_vect) // CENTER_BTN
 			_delay_ms(200);
 			led_set(8, 0);
 			led_push();
-			_delay_ms(200);
+
 			while (!eeprom_is_ready());
             eeprom_write_byte((uint8_t*)0, (uint8_t)COLOR);
             while (!eeprom_is_ready());
@@ -231,7 +244,7 @@ unsigned volatile char pos2 = 0;
 
 ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 {
-	if(STATE != 1)
+	if(STATUS == 0 || STATUS == 5)
 		return;
 	
 	if(KONTAKTR_BOT && !KONTAKTR_TOP)
@@ -266,8 +279,15 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 	else
 		 pos2++;	
 			 
-	led_bar(pos, COLOR, dir);
-	play_speaker(300);
+	led_bar2(pos, COLOR, dir, 1);
+	branie_dir = dir;
+	branie_counter = 0;
+	
+	led_set(6, COLOR);
+	led_set(7, 1);
+	led_push();
+	
+	play_speaker(50);
 }
 
 ISR(PCINT2_vect) // TOP_BTN

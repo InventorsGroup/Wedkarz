@@ -9,7 +9,7 @@
 #                is connected.
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
-DEVICE     = atmega48
+DEVICE     = atmega88
 CLOCK      = 8000000
 PROGRAMMER = -c usbasp -P avrdoper -F
 LIBDIR     = lib

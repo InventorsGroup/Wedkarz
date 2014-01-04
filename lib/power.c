@@ -1,7 +1,7 @@
 #include "power.h"
 
-volatile unsigned char STATE = 1; //0 - OFF, 1 - NORMAL, 2 - CONFIG
-volatile unsigned char NIGHT = 0;
+volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
+volatile unsigned char PREV_STATUS = 1;
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char CONF_ENTER = 0;
@@ -12,14 +12,14 @@ void power_down()
 {	
 	led_clear();
 	set_speaker(0);
-	STATE = 0;
+	STATUS = 0;
+	PREV_STATUS = STATUS;
     SMCR |= (1 << SM1) | (1 << SE);
 
     EICRA &= ~((1 << ISC11) | (1 << ISC10));
 	EIMSK |= (1 << INT1);
 	//TCCR0B &= ~((1 << CS00) | (1 << CS02));
     ANTI_THEFT = 0;
-    NIGHT = 0;
     led_enable(0);
     sleep_cpu();
 }
@@ -32,13 +32,14 @@ ISR(INT1_vect)
 
 void wake_up()
 {	
-
 	EIMSK &= ~(1 << INT1);
 	SMCR &= ~(1 << SE);
-    STATE = 1;
     
-
-
+	if(PREV_STATUS != 0 && PREV_STATUS != 5)
+		STATUS = PREV_STATUS;
+	else
+		STATUS = 1;
+	
     _delay_ms(1000);
 
  //   TCCR0B |= (1 << CS00) | (1 << CS02);
@@ -47,7 +48,7 @@ void wake_up()
 
     if(CENTER_BTN)
     {
-    	STATE = 2;
+    	STATUS = 5;
     	play_speaker(1000);
     	CONF_ENTER = 1;
     }

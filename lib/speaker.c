@@ -8,6 +8,7 @@ unsigned volatile char freq_tab[] = {100, 110, 120, 140, 150, 160, 180};
 void speaker_init()
 {	
 	//TCCR2B |= (1 << CS22);
+	DDRD |= (1 << PD6);
 	TIMSK2 |= (1 << OCIE2A) | (1 << OCIE2B);
 	OCR2A = 1;
 	OCR2B = 2;
@@ -15,10 +16,13 @@ void speaker_init()
 
 void set_speaker(char state)
 {
-	if(state > 0 && VOL > -1)
+	if(state > 0 && VOL > -1 && ~(TCCR2B & (1 << CS22)))
 		TCCR2B |= (1 << CS22);
-	else
+	else if(state == 0)
+	{
 		TCCR2B &= ~(1 << CS22);
+		PORTD &= ~(1 << PD6);
+	}
 }
 
 void play_speaker(int length)
@@ -33,18 +37,19 @@ ISR(TIMER2_COMPA_vect)
 	unsigned volatile int volume = freq_tab[FREQ] / 2;
 	volume = volume * vol_tab[VOL];
 	volume /= 100;
-
+	
 	if(OCR2A + volume > 255)
-		OCR2B = (OCR2A +  volume) - 256;
+		OCR2B = ((OCR2A +  volume) - 256);
 	else
 		OCR2B = OCR2A +  volume;
 	
 	if(OCR2A + freq_tab[FREQ] > 255)
-		OCR2A = (OCR2A+ freq_tab[FREQ]) - 256;
+		OCR2A = ((OCR2A+ freq_tab[FREQ]) - 256);
 	else
 		OCR2A += freq_tab[FREQ];
 	
 	PORTD |= (1 << PD6);
+
 }
 
 ISR(TIMER2_COMPB_vect)
