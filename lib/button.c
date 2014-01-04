@@ -1,7 +1,7 @@
 #include "button.h"
 
 unsigned volatile char SENSIVITY = 1;
-
+unsigned volatile char TIME = 1;
 void button_init()
 {
 	DDRB &= ~(1 << PB0);
@@ -31,6 +31,7 @@ volatile unsigned char spk_tmp = 0;
 volatile unsigned char night_tmp = 0, night_tmp2 = 0;
 volatile unsigned int branie_counter = 0;
 volatile unsigned char branie_dir = 0;
+volatile unsigned char config_blink_counter = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -46,8 +47,23 @@ ISR(TIMER0_COMPA_vect)
 		}
 	}
 
+	if(STATUS == 5)
+	{
+		config_blink_counter++;
 
-	if(STATUS != 0 && STATUS != 5)
+		if(config_blink_counter > 60)
+		{
+			config_blink_counter = 0;
+			led_set(8,1);
+			led_push();
+		}
+		else if(config_blink_counter > 30)
+		{
+			led_set(8,0);
+			led_push();
+		}
+	} 
+	else if(STATUS != 0)
 	{
 	
 		if(branie_counter < 400)
@@ -208,13 +224,13 @@ ISR(PCINT0_vect) // CENTER_BTN
 		{
 			led_set(8, 1);
 			led_push();
-			_delay_ms(200);
+			_delay_ms(100);
 			led_set(8, 0);
 			led_push();
-			_delay_ms(200);
+			_delay_ms(100);
 			led_set(8, 1);
 			led_push();
-			_delay_ms(200);
+			_delay_ms(100);
 			led_set(8, 0);
 			led_push();
 
@@ -222,6 +238,8 @@ ISR(PCINT0_vect) // CENTER_BTN
             eeprom_write_byte((uint8_t*)0, (uint8_t)COLOR);
             while (!eeprom_is_ready());
             eeprom_write_byte((uint8_t*)8, (uint8_t)BRIGHTNESS);
+            while (!eeprom_is_ready());
+            eeprom_write_byte((uint8_t*)16, (uint8_t)TIME);
             while (!eeprom_is_ready());
 			GO_TO_POWER_DOWN = 1;
 		}

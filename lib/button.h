@@ -8,6 +8,7 @@
 #include "pot.h"
 
 extern unsigned volatile char SENSIVITY;
+extern unsigned volatile char TIME;
 void button_init();
 ISR(TIMER0_COMPA_vect);
 ISR(INT1_vect);

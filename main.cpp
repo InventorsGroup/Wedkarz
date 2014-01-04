@@ -15,6 +15,7 @@ void read_config()
 {
 	COLOR = eeprom_read_byte((uint8_t*)0);
     BRIGHTNESS = eeprom_read_byte((uint8_t*)8);
+    TIME = eeprom_read_byte((uint8_t*)16);
 
     if(COLOR > 6 || COLOR < 1)
     	COLOR = 1;
@@ -22,7 +23,11 @@ void read_config()
     if(BRIGHTNESS > 6 || BRIGHTNESS < 1)
     	BRIGHTNESS = 1;
 
+
     led_brightness_to_power();
+
+     if(TIME> 6 || TIME < 1)
+    	TIME = 1;
 }
 
  void normal_mode()
@@ -54,8 +59,6 @@ void read_config()
 		}
 }
 
-
-unsigned volatile int tmpcnt = 0;
 void config_mode()
 {
 		if (x[0] != x_prev[0]) 
@@ -68,27 +71,18 @@ void config_mode()
 
 		if (x[1] != x_prev[1]) 
 		{				
-			BRIGHTNESS = x[1]+1;
-			led_brightness_to_power();
+			TIME = x[1]+1;
 			led_bar(x[1]+1, COLOR, 1);
 			x_prev[1] = x[1];			
 		}
 
-		if(tmpcnt == 2000)
-		{
-			led_set(7, 1);
-			led_push();
+		if (x[2] != x_prev[2]) 
+		{				
+			BRIGHTNESS = x[2]+1;
+			led_brightness_to_power();
+			led_bar(x[2]+1, COLOR, 1);
+			x_prev[2] = x[2];			
 		}
-		else if(tmpcnt == 4000)
-		{
-			led_set(7, 0);
-			led_push();
-			tmpcnt = 0;
-		}
-
-		tmpcnt++;
-
-
 }
 
 
