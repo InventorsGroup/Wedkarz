@@ -59,19 +59,23 @@ void wake_up()
     }
     else
     {
-    	play_speaker(500);
+        if(TIME > 1)
+            silent_time = 1;           
+        
     	for(int i = 0; i < 6; i++)
         {
             led_bar(i+1, COLOR, 1);
-            _delay_ms(200);
+            _delay_ms(50);
         }
 
         for(int i = 6; i > 0; i--)
         {
             led_bar(i, COLOR, 1);
-            _delay_ms(200);
+            _delay_ms(50);
         }
 
+        
+        play_speaker(500);
         led_bar_clear();
     }
 

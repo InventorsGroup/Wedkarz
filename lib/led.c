@@ -168,7 +168,7 @@ void led_clear()
 
 void led_bar_clear()
 {
-	for (int i = 0; i < 7; i++) led_set(i, 0);
+	for (int i = 0; i < 6; i++) led_set(i, 0);
 	led_push();
 }
 
