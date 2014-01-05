@@ -156,7 +156,6 @@ void led_push()
 	LA_PORT |= (1 << LA);
 	LA_PORT &= ~(1 << LA); // Latch output
 
-	led_turn_off = 0;
 	led_enable(1);
 }
 
@@ -190,4 +189,5 @@ void led_bar2(unsigned char n, unsigned char c, unsigned char dir, unsigned char
 		else led_set(i, c);
 	}
 	led_push();
+	led_turn_off = 1;
 }

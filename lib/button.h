@@ -8,7 +8,10 @@
 #include "pot.h"
 
 extern unsigned volatile char SENSIVITY;
-extern unsigned volatile char TIME;
+extern volatile unsigned int theft_alarm_counter;
+extern volatile unsigned char theft_alarm_light_counter;
+extern volatile unsigned char kontaktr_set_delay;
+
 void button_init();
 ISR(TIMER0_COMPA_vect);
 ISR(INT1_vect);

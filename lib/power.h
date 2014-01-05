@@ -14,4 +14,3 @@ extern volatile unsigned char GO_TO_POWER_DOWN;
 extern volatile unsigned char NIGHT;
 extern volatile unsigned char ANTI_THEFT;
 extern volatile unsigned char CONF_ENTER;
-extern volatile unsigned char THEFT_ALARM;

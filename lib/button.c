@@ -33,6 +33,7 @@ volatile unsigned char branie_dir = 0;
 volatile unsigned char config_blink_counter = 0;
 volatile unsigned int theft_alarm_counter = 0;
 volatile unsigned char theft_alarm_light_counter = 0;
+volatile unsigned char kontaktr_set_delay = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -44,6 +45,14 @@ ISR(TIMER0_COMPA_vect)
 		if(silent_time > TIME * 200)
 			silent_time = 0;
 
+	}
+
+	if(kontaktr_set_delay > 0)
+	{
+		kontaktr_set_delay++;
+
+		if(kontaktr_set_delay > 10)
+			kontaktr_set_delay = 0;
 	}
 	
 	if(spk_cnt > 0)
@@ -113,7 +122,7 @@ ISR(TIMER0_COMPA_vect)
 			}
 		}
 	
-		if(ANTI_THEFT == 0)
+		if(ANTI_THEFT == 0 && led_turn_off > 0)
 		{
 			led_turn_off++;
 
@@ -126,7 +135,7 @@ ISR(TIMER0_COMPA_vect)
 
 		if((STATUS == 2 || STATUS == 4) && branie_counter >= 400)
 		{
-			if(adc[FOTO2] > 800 && night_tmp < 50)
+			if(adc[FOTO2] > 200 && night_tmp < 50)
 			{
 				night_tmp++;
 			}
@@ -320,6 +329,7 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 		else
 			pos++;
 
+		kontaktr_set_delay = 1;
 
 		if(dir > 0)
 			play_speaker(50);
@@ -331,8 +341,7 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 
 	if(STATUS != 3 && STATUS != 4)		 
 		led_bar2(pos, COLOR, dir, 1);
-	else
-		led_bar_clear();
+
 		
 		branie_dir = dir;
 		branie_counter = 0;

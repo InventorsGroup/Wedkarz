@@ -10,6 +10,7 @@
 #include "lib/button.h"
 
 volatile unsigned int x_prev[3], x[3];
+
 void read_config()
 {
 	COLOR = eeprom_read_byte((uint8_t*)0);
@@ -55,10 +56,12 @@ void read_config()
 			led_bar(((x[2]/2)+1)*2, COLOR, 1);
 			x_prev[2] = x[2];			
 		}
+	
 }
 
 void config_mode()
 {
+	
 		if (x[0] != x_prev[0]) 
 		{		
 			COLOR = x[0]+1;
@@ -81,6 +84,7 @@ void config_mode()
 			led_bar(x[2]+1, COLOR, 1);
 			x_prev[2] = x[2];			
 		}
+		
 }
 
 
@@ -100,11 +104,6 @@ int main(void)
 
 	_delay_ms(200);
 
-
-//	x_prev[0] = adc[POT1]/200; // volume or color
-//	x_prev[1] = adc[POT2]/200; // freq or brigthness
-//	x_prev[2] = adc[POT3]/450; // sensivity
-
 	
 	while(1)
 	{     
@@ -117,11 +116,11 @@ int main(void)
 
 		if(THEFT_ALARM == 1)
 		{
-			if(theft_alarm_counter == 5)		
-				set_speaker(1);
+			
 
 			if(theft_alarm_counter < 300)		
 			{		
+				set_speaker(1);
 				if((theft_alarm_counter / 10) % 2 == 0)
 					set_custom_speaker(90, 130);
 				else
@@ -170,7 +169,8 @@ int main(void)
 		}
 		else
 		{
-			normal_mode();
+			if(kontaktr_set_delay == 0)
+				normal_mode();
 		}
 
 	}  

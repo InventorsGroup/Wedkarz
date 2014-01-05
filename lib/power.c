@@ -5,7 +5,7 @@ volatile unsigned char PREV_STATUS = 1;
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char CONF_ENTER = 0;
-volatile unsigned char THEFT_ALARM = 0;
+
 
 
 void power_down()
@@ -35,9 +35,9 @@ void wake_up()
 	EIMSK &= ~(1 << INT1);
 	SMCR &= ~(1 << SE);
     
-	if(PREV_STATUS != 0 && PREV_STATUS != 5)
-		STATUS = PREV_STATUS;
-	else
+	//if(PREV_STATUS != 0 && PREV_STATUS != 5)
+//		STATUS = PREV_STATUS;
+//	else
 		STATUS = 1;
 	
     _delay_ms(1000);
@@ -46,16 +46,16 @@ void wake_up()
     led_enable(1);
     set_speaker(0);
 
+    if(!TOP_BTN)
+    {
+        GO_TO_POWER_DOWN = 1;
+    }
+    else
     if(CENTER_BTN)
     {
     	STATUS = 5;
     	play_speaker(1000);
     	CONF_ENTER = 1;
-    }
-    else
-    if(!TOP_BTN)
-    {
-    	GO_TO_POWER_DOWN = 1;
     }
     else
     {
@@ -74,7 +74,6 @@ void wake_up()
             _delay_ms(50);
         }
 
-        
         play_speaker(500);
         led_bar_clear();
     }
