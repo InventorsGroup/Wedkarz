@@ -60,14 +60,19 @@ void wake_up()
     else
     {
     	play_speaker(500);
-    	led_bar(3,COLOR, 0);
-    	_delay_ms(200);
-    	led_bar(0,COLOR, 0);
-    	play_speaker(500);
-    	led_bar(3,COLOR, 1);
-    	_delay_ms(200);
-    	led_bar(0,COLOR, 0);
+    	for(int i = 0; i < 6; i++)
+        {
+            led_bar(i+1, COLOR, 1);
+            _delay_ms(200);
+        }
 
+        for(int i = 6; i > 0; i--)
+        {
+            led_bar(i, COLOR, 1);
+            _delay_ms(200);
+        }
+
+        led_bar_clear();
     }
 
 }
