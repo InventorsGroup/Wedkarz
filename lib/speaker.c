@@ -2,7 +2,7 @@
 
 unsigned volatile char spk_cnt = 0;
 unsigned volatile char FREQ = 0;
-unsigned volatile char VOL = 0;
+volatile char VOL = 0;
 unsigned volatile char vol_tab[] = {15, 30, 60, 80, 90};
 unsigned volatile char freq_tab[] = {100, 110, 120, 140, 150, 160, 180};
 volatile unsigned int silent_time = 0;
@@ -22,7 +22,7 @@ void speaker_init()
 
 void set_speaker(char state)
 {
-	if(state > 0 && VOL > -1 && (silent_time == 0 || THEFT_ALARM > 0))
+	if(state > 0 && ((silent_time == 0 && VOL > -1) || THEFT_ALARM > 0))
 	{
 		TCCR2B |= (1 << CS22);
 	}
@@ -38,7 +38,7 @@ void set_speaker(char state)
 
 void play_speaker(int length)
 {
-	if(TIME > 1 && (silent_time == 0 || THEFT_ALARM > 0))
+	if(TIME > 1 && ((silent_time == 0 && VOL > -1) || THEFT_ALARM > 0))
 	{
 		return;
 	}
@@ -50,10 +50,11 @@ void play_speaker(int length)
 
 void play_speaker_alt(int length)
 {
-	if(TIME > 1 && (silent_time == 0 || THEFT_ALARM > 0))
+	if(TIME > 1 && ((silent_time == 0 && VOL > -1) || THEFT_ALARM > 0))
 	{
 		return;
 	}
+	
 		if(FREQ == 0)
 			ACTUAL_FREQ = freq_tab[FREQ+1];
 		else
@@ -86,8 +87,8 @@ ISR(TIMER2_COMPA_vect)
 		OCR2A = ((OCR2A+ ACTUAL_FREQ) - 256);
 	else
 		OCR2A += ACTUAL_FREQ;
-	
-	PORTD |= (1 << PD6);
+
+		PORTD |= (1 << PD6);
 
 }
 

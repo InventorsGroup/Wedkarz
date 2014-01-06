@@ -11,6 +11,6 @@ void set_custom_speaker(unsigned char v, unsigned char f);
 extern volatile unsigned int silent_time;
 extern unsigned volatile char TIME;
 extern unsigned volatile char FREQ;
-extern unsigned volatile char VOL;
+extern volatile char VOL;
 extern unsigned volatile char spk_cnt;
 extern volatile unsigned char THEFT_ALARM;

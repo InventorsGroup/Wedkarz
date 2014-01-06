@@ -133,9 +133,9 @@ ISR(TIMER0_COMPA_vect)
 			}
 		}
 
-		if((STATUS == 2 || STATUS == 4) && branie_counter >= 400)
+		if((STATUS == 2 || STATUS == 4))
 		{
-			if(adc[FOTO2] > 200 && night_tmp < 50)
+			if(adc[FOTO2] > 500 && night_tmp < 50)
 			{
 				night_tmp++;
 			}
@@ -150,12 +150,12 @@ ISR(TIMER0_COMPA_vect)
 
 				if(night_tmp2 == 25)
 				{
-					led_set(6, COLOR);
+					led_set(8, 1);
 					led_push();
 				}
 				else if(night_tmp2 > 50)
 				{
-					led_set(6, 0);
+					led_set(8, 0);
 					led_push();
 					night_tmp2 = 0;
 				}
@@ -211,7 +211,7 @@ ISR(TIMER0_COMPA_vect)
 					center_btn_counter = 0;
 				}
 			}
-			else if(center_btn_counter > 1 && center_btn_counter < 15)
+			else if(center_btn_counter >= 1 && center_btn_counter < 15)
 			{
 			
 				if(STATUS < 4)
@@ -226,7 +226,14 @@ ISR(TIMER0_COMPA_vect)
 					led_set(8, 0);
 					_delay_ms(150);
 				}
-			
+				
+				led_clear();
+				
+				if(ANTI_THEFT > 0)
+				{
+					led_set(9, 1); //led IR
+					led_push();
+				}
 
 				center_btn_counter = 0;
 			}
@@ -239,7 +246,19 @@ ISR(TIMER0_COMPA_vect)
 		top_btn_counter++;
 
 		if(top_btn_counter > 30)
-		{
+		{			
+			for(int i = 0; i < 6; i++)
+			{
+				led_bar(i+1, COLOR, 0);
+				_delay_ms(50);
+			}
+
+			for(int i = 6; i > 0; i--)
+			{
+				led_bar(i, COLOR, 0);
+				_delay_ms(50);
+			}	
+
 			GO_TO_POWER_DOWN = 1;
 			top_btn_counter = 0;
 		}
