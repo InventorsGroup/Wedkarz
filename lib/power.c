@@ -58,9 +58,7 @@ void wake_up()
     	CONF_ENTER = 1;
     }
     else
-    {
-        if(TIME > 1)
-            silent_time = 1;           
+    {      
         
     	for(int i = 0; i < 6; i++)
         {

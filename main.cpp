@@ -21,7 +21,7 @@ void read_config()
     	COLOR = 1;
 
     if(BRIGHTNESS > 6 || BRIGHTNESS < 1)
-    	BRIGHTNESS = 1;
+    	BRIGHTNESS = 6;
 
     led_brightness_to_power();
 
@@ -51,7 +51,7 @@ volatile int adc_diff = 0;
 		adc_diff = adc[POT1]- x_prev2[0];
 		if(adc_diff<0)adc_diff*=-1;
 		
-		if (x[0] != x_prev[0] && adc_diff > 30) 
+		if (x[0] != x_prev[0] && adc_diff > 50) 
 		{		
 			VOL = x[0] - 1;
 			led_bar(x[0]+1, COLOR, 1);		
@@ -63,7 +63,7 @@ volatile int adc_diff = 0;
 		adc_diff = adc[POT2]- x_prev2[1];
 		if(adc_diff<0)adc_diff*=-1;
 		
-		if (x[1] != x_prev[1]&& adc_diff > 30) 
+		if (x[1] != x_prev[1]&& adc_diff > 50) 
 		{				
 			FREQ = x[1];
 			led_bar(x[1]+1, COLOR, 1);			
@@ -75,7 +75,7 @@ volatile int adc_diff = 0;
 		adc_diff = adc[POT3]- x_prev2[2];
 		if(adc_diff<0)adc_diff*=-1;
 
-		if (x[2] != x_prev[2] && adc_diff > 30) 
+		if (x[2] != x_prev[2] && adc_diff > 50) 
 		{				
 			SENSIVITY = 4-((x[2]/2)+1);
 			led_bar(((x[2]/2)+1)*2, COLOR, 1);
@@ -87,11 +87,10 @@ volatile int adc_diff = 0;
 
 void config_mode()
 {
-	
 		adc_diff = adc[POT1]- x_prev2[0];
 		if(adc_diff<0)adc_diff*=-1;
 		
-		if (x[0] != x_prev[0] && adc_diff > 30) 
+		if (x[0] != x_prev[0] && adc_diff > 50) 
 		{		
 			COLOR = x[0]+1;
 			led_bar(6, COLOR, 1);
@@ -102,7 +101,7 @@ void config_mode()
 		adc_diff = adc[POT2]- x_prev2[1];
 		if(adc_diff<0)adc_diff*=-1;
 		
-		if (x[1] != x_prev[1]&& adc_diff > 30) 
+		if (x[1] != x_prev[1]&& adc_diff > 50) 
 		{				
 			TIME = x[1]+1;
 			led_bar(x[1]+1, COLOR, 1);
@@ -113,11 +112,12 @@ void config_mode()
 		adc_diff = adc[POT3]- x_prev2[2];
 		if(adc_diff<0)adc_diff*=-1;
 
-		if (x[2] != x_prev[2] && adc_diff > 30) 
+		if (x[2] != x_prev[2] && adc_diff > 50) 
 		{				
 			BRIGHTNESS = x[2]+1;
 			led_brightness_to_power();
-			led_bar(x[2]+1, COLOR, 1);
+			led_bar(6, COLOR, 1);
+			//led_bar(x[2]+1, COLOR, 1);
 			x_prev[2] = x[2];	
 			x_prev2[2] = adc[POT3];			
 		}
@@ -138,11 +138,12 @@ int main(void)
 	speaker_init();
 	
 	sei();	
-
-	_delay_ms(200);
-	
+	_delay_ms(200);	
 	read_silent_values();
 	
+	branie_counter = 500;
+	led_clear();
+	led_push();
 	while(1)
 	{     
 

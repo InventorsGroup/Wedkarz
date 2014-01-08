@@ -22,7 +22,7 @@ void speaker_init()
 
 void set_speaker(char state)
 {
-	if(state > 0 && ((silent_time == 0 && VOL > -1) || THEFT_ALARM > 0))
+	if(state > 0)
 	{
 		TCCR2B |= (1 << CS22);
 	}
@@ -38,7 +38,7 @@ void set_speaker(char state)
 
 void play_speaker(int length)
 {
-	if(TIME > 1 && ((silent_time == 0 && VOL > -1) || THEFT_ALARM > 0))
+	if(((TIME > 1 && silent_time > 0) || VOL == -1) &&  THEFT_ALARM == 0)
 	{
 		return;
 	}
@@ -50,7 +50,7 @@ void play_speaker(int length)
 
 void play_speaker_alt(int length)
 {
-	if(TIME > 1 && ((silent_time == 0 && VOL > -1) || THEFT_ALARM > 0))
+	if(((TIME > 1 && silent_time > 0) || VOL == -1) &&  THEFT_ALARM == 0)
 	{
 		return;
 	}

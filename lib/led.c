@@ -66,8 +66,8 @@ void led_power(unsigned char p)
 {
 	if (p < 0) p = 0;
 	else if (p > 100) p = 100;
-	led_pwr = 255-p;
-	OCR1A = led_pwr;
+	led_pwr =p;
+	OCR1A =  255-p;
 }
 
 
@@ -139,6 +139,7 @@ void led_set(unsigned char n, unsigned char color)
 
 void led_push()
 {
+	led_set(9, 1);
 	for (int i = 0; i<36; i++){
 		
 		if (leds[i] == 1) SDI_PORT |= (1 << SDI);
@@ -161,6 +162,7 @@ void led_push()
 
 void led_clear()
 {
+	 PORTD &= ~(1 << PD5);
 	for (int i=0; i<36; i++) leds[i] = 0;
 	led_push();
 }

@@ -34,10 +34,11 @@ volatile unsigned char config_blink_counter = 0;
 volatile unsigned int theft_alarm_counter = 0;
 volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char kontaktr_set_delay = 0;
-
+volatile unsigned char wedka_polozona = 0;
+volatile unsigned char wedka_cnter = 0;
 ISR(TIMER0_COMPA_vect)
 {
-
+		
 	if(TIME > 1 && silent_time > 0)
 	{
 		silent_time++;
@@ -97,6 +98,27 @@ ISR(TIMER0_COMPA_vect)
 	else if(STATUS != 0)
 	{
 	
+		if(adc[FOTO1] > 980 && wedka_cnter < 40)
+		{
+			wedka_cnter++;
+		}
+		
+		if(adc[FOTO1] < 900 && wedka_cnter > 0)
+		{
+			wedka_cnter--;
+		}
+
+		if(TIME > 1 &&  wedka_cnter > 20 && wedka_polozona == 0 && silent_time == 0)
+		{
+			silent_time = 1;   
+			wedka_polozona = 1;
+		}
+		
+		if(TIME > 1 && wedka_cnter < 10 && wedka_polozona == 1)
+		{
+			wedka_polozona = 0;
+		}
+	
 		if(branie_counter < 400)
 		{
 			branie_counter++;			
@@ -135,7 +157,7 @@ ISR(TIMER0_COMPA_vect)
 
 		if((STATUS == 2 || STATUS == 4))
 		{
-			if(adc[FOTO2] > 500 && night_tmp < 50)
+			/*if(adc[FOTO2] > 500 && night_tmp < 50)
 			{
 				night_tmp++;
 			}
@@ -145,7 +167,7 @@ ISR(TIMER0_COMPA_vect)
 			}
 
 			if(night_tmp > 25)
-			{
+			{*/
 				night_tmp2++;
 
 				if(night_tmp2 == 25)
@@ -159,12 +181,12 @@ ISR(TIMER0_COMPA_vect)
 					led_push();
 					night_tmp2 = 0;
 				}
-			}
+		/*	}
 			else if(night_tmp == 0)
 			{	
 					led_set(6, 0);
 					led_push();
-			}
+			}*/
 		}
 
 		if(ANTI_THEFT > 0 && adc[FOTO1] < 400)
@@ -227,6 +249,7 @@ ISR(TIMER0_COMPA_vect)
 					_delay_ms(150);
 				}
 				
+				branie_counter = 500;
 				led_clear();
 				
 				if(ANTI_THEFT > 0)
@@ -245,7 +268,7 @@ ISR(TIMER0_COMPA_vect)
 	{
 		top_btn_counter++;
 
-		if(top_btn_counter > 30)
+		if(top_btn_counter == 30)
 		{			
 			for(int i = 0; i < 6; i++)
 			{
@@ -316,7 +339,7 @@ unsigned volatile char pos2 = 0;
 
 ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 {
-	if(STATUS == 0 || STATUS == 5)
+	if(STATUS == 0 || STATUS == 5 || TOP_BTN || CENTER_BTN)
 		return;
 	
 	if(KONTAKTR_BOT && !KONTAKTR_TOP)
