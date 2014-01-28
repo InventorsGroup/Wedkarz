@@ -15,8 +15,8 @@ void button_init()
 	
 	PCICR |= (1 << PCIE1) | (1 << PCIE0) | (1 << PCIE2);
 	PCMSK0 |= (1 << PCINT0);
-	PCMSK1 |= (1 << PCINT11) | (1 << PCINT8);
-	PCMSK2 |= (1 << PCINT23);
+	PCMSK1 |= (1 << PCINT11);
+	PCMSK2 |= (1 << PCINT23) | (1 << PCINT18);
 
 	TCCR0A |= (1 << WGM01);
 	TCCR0B |= (1 << CS00) | (1 << CS02);
@@ -336,20 +336,20 @@ unsigned volatile char dir = 0;
 unsigned volatile char pos = 0;
 unsigned volatile char pos2 = 0;
 
-
-ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
+void kontaktron_check()
 {
+
 	if(STATUS == 0 || STATUS == 5 || TOP_BTN || CENTER_BTN)
 		return;
 	
-	if(KONTAKTR_BOT && !KONTAKTR_TOP)
+	if(!KONTAKTR_BOT && KONTAKTR_OR)
 	{
 		char dirprev = dir;
 	
 		if(kon1 == 1 && kon2 == 1)
-			dir = 1;
+			dir = 0;
 		else if(kon1 == 0 && kon2 == 0)
-			dir = 0;	
+			dir = 1;	
 			
 		if(dir != dirprev)
 		{
@@ -359,7 +359,7 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 	}
 
 	kon1 = KONTAKTR_BOT;
-	kon2 = KONTAKTR_TOP;	
+	kon2 = KONTAKTR_OR;	
 	
 
 	if(pos2 > SENSIVITY*2)
@@ -391,14 +391,25 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 		led_set(6, COLOR);
 		led_set(7, 1);
 		led_push();
-	
+
+}
+
+
+ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
+{
+	kontaktron_check();	
 }
 
 ISR(PCINT2_vect) // TOP_BTN
-{
+{	
+	
 	if(TOP_BTN)
 	{
 		top_btn_counter = 1;
+	}
+	else
+	{
+		kontaktron_check();
 	}
 
 }

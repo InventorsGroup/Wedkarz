@@ -18,10 +18,6 @@
 #define CLK 4
 #define LA 4
 
-//button led
-#define BTNLED 5
-#define BTNLED_PORT PORTD
-#define BTNLED_DDR DDRD
 
 //ADC Channels
 #define POT1 0
@@ -40,5 +36,6 @@
 
 #define TOP_BTN (!(PIND & (1<<PD7)))
 #define CENTER_BTN (!(PINB & (1<<PB0)))
-#define KONTAKTR_TOP (!(PINC & (1<<PC0)))
+//#define KONTAKTR_TOP (!(PINC & (1<<PC0)))
 #define KONTAKTR_BOT (!(PINC & (1<<PC3)))
+#define KONTAKTR_OR (!(PIND & (1 << PD2)))

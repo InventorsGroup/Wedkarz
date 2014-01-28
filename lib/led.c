@@ -35,7 +35,6 @@ void led_init()
 	OE_DDR |= (1 << OE);
 	CLK_DDR |= (1 << CLK);
 	LA_DDR |= (1 << LA);
-	BTNLED_DDR |= (1 << BTNLED);
 	led_enable(1);
 	
 	//PWM
@@ -45,7 +44,7 @@ void led_init()
 	//Button Led PWM
 	
 	DDRD |= (1 << PD5);
-//	PORTD |= (1 << PD5);
+	PORTD |= (1 << PD5);
 	//TCCR0A |= (1 << COM0B1)  | (1 << WGM02) | (1 << WGM00) ;
 	//TCCR0B |= (1 << CS01) | (1 << CS00);
 }
@@ -126,8 +125,8 @@ void led_set(unsigned char n, unsigned char color)
 		else if (n == 8) // button led exception 
 		{
 			//OCR0B = color;
-			if(color > 0)PORTD |= (1 << PD5);
-			else PORTD &= ~(1 << PD5);
+			//if(color > 0)PORTD |= (1 << PD5);
+			//else PORTD &= ~(1 << PD5);
 
 		}
 		else if ((n == 9)) //white topled exception	
@@ -162,7 +161,6 @@ void led_push()
 
 void led_clear()
 {
-	 PORTD &= ~(1 << PD5);
 	for (int i=0; i<36; i++) leds[i] = 0;
 	led_push();
 }
