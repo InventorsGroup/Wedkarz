@@ -21,6 +21,7 @@ void power_down()
 	//TCCR0B &= ~((1 << CS00) | (1 << CS02));
     ANTI_THEFT = 0;
     led_enable(0);
+    PORTD &= ~(1 << PD5);
     sleep_cpu();
 }
 
@@ -43,6 +44,7 @@ void wake_up()
     _delay_ms(1000);
 
  //   TCCR0B |= (1 << CS00) | (1 << CS02);
+    PORTD |= (1 << PD5);
     led_enable(1);
     set_speaker(0);
 

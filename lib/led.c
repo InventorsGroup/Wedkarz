@@ -48,6 +48,9 @@ void led_init()
 	//driver led on
 	DDRD |= (1 << PD5);
 	PORTD |= (1 << PD5);
+
+	//swinger
+	DDRB |= (1 << PB7);
 }
 
 void led_enable(unsigned char s)
@@ -132,6 +135,14 @@ void led_set(unsigned char n, unsigned char color)
 			if (color > 0) PORTC |= (1 << PC0);
 			else PORTC &= ~(1 << PC0);
 		}
+
+		if(n == 6) //swinger
+		{
+			if(color > 0)
+				PORTD |= (1 << PB7);
+			else
+				PORTD &= ~(1<< PB7);                                  
+		}
 }
 
 void led_push()
@@ -155,6 +166,8 @@ void led_push()
 	LA_PORT &= ~(1 << LA); // Latch output
 
 	led_enable(1);
+
+	led_turn_off = 1;
 }
 
 void led_clear()
@@ -187,5 +200,4 @@ void led_bar2(unsigned char n, unsigned char c, unsigned char dir, unsigned char
 		else led_set(i, c);
 	}
 	led_push();
-	led_turn_off = 1;
 }

@@ -184,7 +184,7 @@ ISR(TIMER0_COMPA_vect)
 			if(led_turn_off > 150)
 			{
 				led_turn_off = 0;
-				led_bar_clear();
+				led_clear();
 			}
 		}
 
