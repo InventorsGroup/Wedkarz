@@ -8,6 +8,7 @@
 #include "lib/pot.h"
 #include "lib/speaker.h"
 #include "lib/button.h"
+#include "lib/rfm12.h"
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
 
@@ -36,7 +37,7 @@ void read_silent_values()
 	x[2] = adc[POT3]/200; // sensivity
 	
 	VOL = x[0] - 1;
-	FREQ = x[1];
+	SPK_FREQ = x[1];
 	SENSIVITY = x[2];
 	
 	x_prev[0] = x[0];
@@ -65,7 +66,7 @@ volatile int adc_diff = 0;
 		
 		if (x[1] != x_prev[1]&& adc_diff > 50) 
 		{				
-			FREQ = x[1];
+			SPK_FREQ = x[1];
 			led_bar(6-x[1], COLOR, 1);			
 			x_prev[1] = x[1];	
 			x_prev2[1] = adc[POT2];			
@@ -103,8 +104,8 @@ void config_mode()
 		
 		if (x[1] != x_prev[1]&& adc_diff > 50) 
 		{				
-			TIME = x[1]+1;
-			led_bar(x[1]+1, COLOR, 1);
+			TIME = 6-x[1];
+			led_bar(6-x[1], COLOR, 1);
 			x_prev[1] = x[1];			
 			x_prev2[1] = adc[POT2];	
 		}
@@ -114,10 +115,9 @@ void config_mode()
 
 		if (x[2] != x_prev[2] && adc_diff > 50) 
 		{				
-			BRIGHTNESS = x[2]+1;
+			BRIGHTNESS = 6-x[2];
 			led_brightness_to_power();
 			led_bar(6, COLOR, 1);
-			//led_bar(x[2]+1, COLOR, 1);
 			x_prev[2] = x[2];	
 			x_prev2[2] = adc[POT3];			
 		}
@@ -133,9 +133,9 @@ int main(void)
 	led_init();
 	button_init();
 	led_clear();
-	led_push();
-	
+	led_push();	
 	speaker_init();
+	rfm12_init();
 	
 	sei();	
 	_delay_ms(200);	
@@ -146,6 +146,7 @@ int main(void)
 	led_push();
 	while(1)
 	{     
+		rfm12_tick();
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
@@ -214,6 +215,7 @@ int main(void)
 			x[2] = adc[POT3]/200; // sensivity
 			if(kontaktr_set_delay == 0)
 				normal_mode();
+
 		}
 
 	}  

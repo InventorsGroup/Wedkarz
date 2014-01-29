@@ -131,12 +131,12 @@ ISR(TIMER0_COMPA_vect)
 			}
 		}
 	
-		if(adc[FOTO1] > 980 && wedka_cnter < 40)
+		if(adc[FOTO1] > 800 && wedka_cnter < 40)
 		{
 			wedka_cnter++;
 		}
 		
-		if(adc[FOTO1] < 900 && wedka_cnter > 0)
+		if(adc[FOTO1] < 400 && wedka_cnter > 0)
 		{
 			wedka_cnter--;
 		}

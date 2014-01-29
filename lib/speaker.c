@@ -1,7 +1,7 @@
 #include "speaker.h"
 
 unsigned volatile char spk_cnt = 0;
-unsigned volatile char FREQ = 0;
+unsigned volatile char SPK_FREQ = 0;
 volatile char VOL = 0;
 unsigned volatile char vol_tab[] = {15, 30, 60, 80, 90};
 unsigned volatile char freq_tab[] = {80, 110, 140, 160, 180, 200, 220};
@@ -46,7 +46,7 @@ void play_speaker(int length)
 	if(spk_cnt != 0)
 		return;
 
-		ACTUAL_FREQ = freq_tab[FREQ];
+		ACTUAL_FREQ = freq_tab[SPK_FREQ];
 		ACTUAL_VOL = vol_tab[VOL];
 		set_speaker(1);
 		spk_cnt = length / 50;
@@ -62,10 +62,10 @@ void play_speaker_alt(int length)
 	if(spk_cnt != 0)
 		return;
 	
-		if(FREQ == 0)
-			ACTUAL_FREQ = freq_tab[FREQ+1];
+		if(SPK_FREQ == 0)
+			ACTUAL_FREQ = freq_tab[SPK_FREQ+1];
 		else
-			ACTUAL_FREQ = freq_tab[FREQ-1];
+			ACTUAL_FREQ = freq_tab[SPK_FREQ-1];
 
 		ACTUAL_VOL = vol_tab[VOL];
 		set_speaker(1);
