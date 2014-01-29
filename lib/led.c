@@ -49,14 +49,23 @@ void led_init()
 	DDRD |= (1 << PD5);
 	PORTD |= (1 << PD5);
 
+	_delay_ms(20);
+
 	//swinger
 	DDRB |= (1 << PB7);
 }
 
 void led_enable(unsigned char s)
 {
-	if (s > 0) led_power(led_pwr);
-	else OCR1A = 255;
+	if (s > 0) 
+	{
+		led_power(led_pwr);
+		
+	}
+	else 
+	{
+		OCR1A = 255;
+	}
 }
 
 void led_brightness_to_power()

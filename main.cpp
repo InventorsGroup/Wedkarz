@@ -189,6 +189,7 @@ int main(void)
 		}
 		else if(THEFT_ALARM == 2)
 		{
+			theft_alarm_counter = 0;
 			set_speaker(0);
 			led_clear();
 			led_push();

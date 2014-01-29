@@ -190,7 +190,7 @@ ISR(TIMER0_COMPA_vect)
 
 		if((STATUS == 2 || STATUS == 4))
 		{
-			if(adc[FOTO2] < 10 && night_tmp < 50)
+			if(adc[FOTO2] < 15 && night_tmp < 50)
 			{
 				night_tmp++;
 			}
@@ -215,7 +215,10 @@ ISR(TIMER0_COMPA_vect)
 		{
 			 THEFT_ALARM = 1;
 		}
-
+		else if(ANTI_THEFT > 0 && adc[FOTO1] > 800 && THEFT_ALARM == 1)
+		{
+			THEFT_ALARM = 2;
+		}
 		if(center_btn_counter > 0)
 		{
 			if(CENTER_BTN)
@@ -391,7 +394,7 @@ void kontaktron_check()
                 {            
                 	branie_dir = dir;     
             		kometa_cnter = 1;
- 
+ 					branie_counter = 0;
             	}
 
 
@@ -407,7 +410,7 @@ void kontaktron_check()
         else
                  pos2++;        
 
-         branie_counter = 0;
+        
                 
      
 
