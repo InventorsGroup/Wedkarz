@@ -37,7 +37,7 @@ void read_silent_values()
 	
 	VOL = x[0] - 1;
 	FREQ = x[1];
-	SENSIVITY = 4-((x[2]/2)+1);
+	SENSIVITY = x[2];
 	
 	x_prev[0] = x[0];
 	x_prev[1] = x[1];
@@ -53,8 +53,8 @@ volatile int adc_diff = 0;
 		
 		if (x[0] != x_prev[0] && adc_diff > 50) 
 		{		
-			VOL = x[0] - 1;
-			led_bar(x[0]+1, COLOR, 1);		
+			VOL = 4 - x[0];
+			led_bar(6-x[0], COLOR, 1);		
 			x_prev[0] = x[0];
 			x_prev2[0] = adc[POT1];			
 			play_speaker(100);
@@ -66,7 +66,7 @@ volatile int adc_diff = 0;
 		if (x[1] != x_prev[1]&& adc_diff > 50) 
 		{				
 			FREQ = x[1];
-			led_bar(x[1]+1, COLOR, 1);			
+			led_bar(6-x[1], COLOR, 1);			
 			x_prev[1] = x[1];	
 			x_prev2[1] = adc[POT2];			
 			play_speaker(100);	
@@ -77,8 +77,8 @@ volatile int adc_diff = 0;
 
 		if (x[2] != x_prev[2] && adc_diff > 50) 
 		{				
-			SENSIVITY = 4-((x[2]/2)+1);
-			led_bar(((x[2]/2)+1)*2, COLOR, 1);
+			SENSIVITY = x[2];
+			led_bar(x[2]+ 1, COLOR, 1);
 			x_prev2[2] = adc[POT3];	
 			x_prev[2] = x[2];			
 		}

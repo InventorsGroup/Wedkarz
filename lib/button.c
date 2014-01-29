@@ -353,6 +353,8 @@ ISR(PCINT0_vect) // CENTER_BTN
 	}
 }
 
+unsigned static volatile char sens_tab[] = {8, 15, 25, 45, 60, 80};
+
 void kontaktron_check()
 {
 
@@ -378,24 +380,26 @@ void kontaktron_check()
         kon2 = KONTAKTR_OR;        
         
 
-        if(pos2 > SENSIVITY*2)
+        if(pos2 > sens_tab[SENSIVITY])
         {
                  pos2 = 0;
-                         
-
 
                 kontaktr_set_delay = 1;
 
-                if(dir > 0)
+
+                if(STATUS != 3 && STATUS != 4 && kometa_cnter == 0)
+                {            
+                	branie_dir = dir;     
+            		kometa_cnter = 1;
+ 
+            	}
+
+
+                if(branie_dir > 0)
                         play_speaker(50);
                 else
                         play_speaker_alt(50);
 
-                if(STATUS != 3 && STATUS != 4 && kometa_cnter == 0)
-                {                 
-            		kometa_cnter = 1;
-            		branie_dir = dir;
-            	}
             	led_set(6, COLOR);
                 led_set(7, 1);
                 led_push();
