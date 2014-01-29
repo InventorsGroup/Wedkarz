@@ -6,8 +6,8 @@ void button_init()
 	DDRB &= ~(1 << PB0);
 	PORTB |= (1 << PB0);
 	
-	DDRC &= ~((1 << PC0) | (1 << PC3));
-	PORTC |= (1 << PC0) | (1 << PC3);
+	DDRC &=  ~(1 << PC3);
+	PORTC |=  (1 << PC3);
 
 	DDRD &= ~( (1 << PD2) | (1 << PD3) | (1 << PD7));
 	PORTD |= (1 << PD2) | (1 << PD3) | (1<< PD7);
@@ -27,7 +27,7 @@ void button_init()
 volatile unsigned char center_btn_counter = 0;
 volatile unsigned char top_btn_counter = 0;
 volatile unsigned char spk_tmp = 0;
-volatile unsigned char night_tmp = 0, night_tmp2 = 0;
+volatile unsigned char night_tmp = 0;
 volatile unsigned int branie_counter = 500;
 volatile unsigned char branie_dir = 0;
 volatile unsigned char config_blink_counter = 0;
@@ -36,6 +36,14 @@ volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char kontaktr_set_delay = 0;
 volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
+volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
+
+//od konaktrona
+unsigned volatile char kon1 = 0;
+unsigned volatile char kon2 = 0;
+unsigned volatile char dir = 0;
+unsigned volatile char pos2 = 0;
+
 ISR(TIMER0_COMPA_vect)
 {
 		
@@ -97,6 +105,31 @@ ISR(TIMER0_COMPA_vect)
 	} 
 	else if(STATUS != 0)
 	{
+		if(kometa_cnter > 0)
+		{
+			kometa_cnter++;
+
+			if(kometa_cnter > 2 && kometa_pos < 6)
+			{
+				led_bar_clear();
+				if(branie_dir == 0)
+					led_set(kometa_pos, COLOR);
+				else
+					led_set(5-kometa_pos, COLOR);
+
+				led_push();
+			
+				kometa_pos++;
+
+				if(kometa_pos == 6)
+				{
+					kometa_cnter = 0;
+					kometa_pos = 0;
+				}
+				else
+					kometa_cnter = 1;
+			}
+		}
 	
 		if(adc[FOTO1] > 980 && wedka_cnter < 40)
 		{
@@ -157,7 +190,7 @@ ISR(TIMER0_COMPA_vect)
 
 		if((STATUS == 2 || STATUS == 4))
 		{
-			/*if(adc[FOTO2] > 500 && night_tmp < 50)
+			if(adc[FOTO2] < 10 && night_tmp < 50)
 			{
 				night_tmp++;
 			}
@@ -166,27 +199,16 @@ ISR(TIMER0_COMPA_vect)
 				night_tmp--;
 			}
 
-			if(night_tmp > 25)
-			{*/
-				night_tmp2++;
-
-				if(night_tmp2 == 25)
-				{
-					led_set(8, 1);
-					led_push();
-				}
-				else if(night_tmp2 > 50)
-				{
-					led_set(8, 0);
-					led_push();
-					night_tmp2 = 0;
-				}
-		/*	}
+			if(night_tmp > 30)
+			{
+				led_set(8, 1);
+				led_push();
+			}
 			else if(night_tmp == 0)
 			{	
-					led_set(6, 0);
-					led_push();
-			}*/
+				led_set(8, 0);
+				led_push();
+			}
 		}
 
 		if(ANTI_THEFT > 0 && adc[FOTO1] < 400)
@@ -241,11 +263,13 @@ ISR(TIMER0_COMPA_vect)
 				else
 					STATUS = 1;
 			
-				for(int i = 0; i < STATUS; i++)
+				if(STATUS == 2 || STATUS == 4)
 				{
 					led_set(8, 1);
+					led_push();
 					_delay_ms(150);
 					led_set(8, 0);
+					led_push();
 					_delay_ms(150);
 				}
 				
@@ -329,70 +353,62 @@ ISR(PCINT0_vect) // CENTER_BTN
 	}
 }
 
-
-unsigned volatile char kon1 = 0;
-unsigned volatile char kon2 = 0;
-unsigned volatile char dir = 0;
-unsigned volatile char pos = 0;
-unsigned volatile char pos2 = 0;
-
 void kontaktron_check()
 {
 
-	if(STATUS == 0 || STATUS == 5 || TOP_BTN || CENTER_BTN)
-		return;
-	
-	if(!KONTAKTR_BOT && KONTAKTR_OR)
-	{
-		char dirprev = dir;
-	
-		if(kon1 == 1 && kon2 == 1)
-			dir = 0;
-		else if(kon1 == 0 && kon2 == 0)
-			dir = 1;	
-			
-		if(dir != dirprev)
-		{
-			pos = 0;
-			pos2 = 0;
-		}
-	}
+        if(STATUS == 0 || STATUS == 5 || TOP_BTN || CENTER_BTN)
+                return;
+        
+        if(!KONTAKTR_BOT && KONTAKTR_OR)
+        {
+                char dirprev = dir;
+        
+                if(kon1 == 1 && kon2 == 1)
+                        dir = 0;
+                else if(kon1 == 0 && kon2 == 0)
+                        dir = 1;        
+                        
+                if(dir != dirprev)
+                {
+                        pos2 = 0;
+                }
+        }
 
-	kon1 = KONTAKTR_BOT;
-	kon2 = KONTAKTR_OR;	
-	
+        kon1 = KONTAKTR_BOT;
+        kon2 = KONTAKTR_OR;        
+        
 
-	if(pos2 > SENSIVITY*2)
-	{
-		 pos2 = 0;
-			 
-		 if(pos > 5)
-			pos = 0;
-		else
-			pos++;
+        if(pos2 > SENSIVITY*2)
+        {
+                 pos2 = 0;
+                         
 
-		kontaktr_set_delay = 1;
 
-		if(dir > 0)
-			play_speaker(50);
-		else
-			play_speaker_alt(50);
-	}
-	else
-		 pos2++;	
+                kontaktr_set_delay = 1;
 
-	if(STATUS != 3 && STATUS != 4)		 
-		led_bar2(pos, COLOR, dir, 1);
+                if(dir > 0)
+                        play_speaker(50);
+                else
+                        play_speaker_alt(50);
 
-		
-		branie_dir = dir;
-		branie_counter = 0;
-		
-		led_set(6, COLOR);
-		led_set(7, 1);
-		led_push();
+                if(STATUS != 3 && STATUS != 4 && kometa_cnter == 0)
+                {                 
+            		kometa_cnter = 1;
+            		branie_dir = dir;
+            	}
+            	led_set(6, COLOR);
+                led_set(7, 1);
+                led_push();
+        }
+        else
+                 pos2++;        
+
+         branie_counter = 0;
+                
+     
 
 }
+
 
 
 ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP

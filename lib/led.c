@@ -41,14 +41,14 @@ void led_init()
 	TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
 	TCCR1B |= (1 << CS11) | (1 << CS10);
 	
-	//Button Led PWM
+	//ir led
+	DDRC |= (1 << PC0);
 	
+
+	//driver led on
 	DDRD |= (1 << PD5);
 	PORTD |= (1 << PD5);
-	//TCCR0A |= (1 << COM0B1)  | (1 << WGM02) | (1 << WGM00) ;
-	//TCCR0B |= (1 << CS01) | (1 << CS00);
 }
-
 
 void led_enable(unsigned char s)
 {
@@ -124,15 +124,13 @@ void led_set(unsigned char n, unsigned char color)
 		}
 		else if (n == 8) // button led exception 
 		{
-			//OCR0B = color;
-			//if(color > 0)PORTD |= (1 << PD5);
-			//else PORTD &= ~(1 << PD5);
-
+			if (color > 0) leds[17] = 1;
+			else leds[17] = 0;
 		}
-		else if ((n == 9)) //white topled exception	
+		else if ((n == 9)) //ir led
 		{
-			if (color > 0) leds[11] = 1;
-			else leds[11] = 0;
+			if (color > 0) PORTC |= (1 << PC0);
+			else PORTC &= ~(1 << PC0);
 		}
 }
 

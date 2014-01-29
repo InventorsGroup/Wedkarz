@@ -42,6 +42,10 @@ void play_speaker(int length)
 	{
 		return;
 	}
+
+	if(spk_cnt != 0)
+		return;
+
 		ACTUAL_FREQ = freq_tab[FREQ];
 		ACTUAL_VOL = vol_tab[VOL];
 		set_speaker(1);
@@ -54,6 +58,9 @@ void play_speaker_alt(int length)
 	{
 		return;
 	}
+
+	if(spk_cnt != 0)
+		return;
 	
 		if(FREQ == 0)
 			ACTUAL_FREQ = freq_tab[FREQ+1];
