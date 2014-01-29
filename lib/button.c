@@ -188,13 +188,14 @@ ISR(TIMER0_COMPA_vect)
 			}
 		}
 
-		if((STATUS == 2 || STATUS == 4))
+		if(STATUS == 2 || STATUS == 4)
 		{
-			if(adc[FOTO2] < 15 && night_tmp < 50)
+			if(adc[FOTO2] < 5)
 			{
-				night_tmp++;
+				if(night_tmp < 50)
+					night_tmp++;
 			}
-			else if(night_tmp > 0)
+			else if(night_tmp > 0 && adc[FOTO2] > 15)
 			{
 				night_tmp--;
 			}
@@ -209,6 +210,8 @@ ISR(TIMER0_COMPA_vect)
 				led_set(8, 0);
 				led_push();
 			}
+
+
 		}
 
 		if(ANTI_THEFT > 0 && adc[FOTO1] < 400)
@@ -326,7 +329,7 @@ ISR(PCINT0_vect) // CENTER_BTN
 			center_btn_counter = 1;
 		else if(STATUS == 5 && CONF_ENTER == 0)
 		{
-			led_set(8, 1);
+					led_set(8, 1);
 			led_push();
 			_delay_ms(100);
 			led_set(8, 0);
@@ -394,7 +397,11 @@ void kontaktron_check()
                 {            
                 	branie_dir = dir;     
             		kometa_cnter = 1;
- 					branie_counter = 0;
+            	}
+            	else
+            	if(STATUS == 3 || STATUS == 4)
+            	{
+            		branie_dir = dir;
             	}
 
 
@@ -406,6 +413,7 @@ void kontaktron_check()
             	led_set(6, COLOR);
                 led_set(7, 1);
                 led_push();
+                branie_counter = 0;
         }
         else
                  pos2++;        

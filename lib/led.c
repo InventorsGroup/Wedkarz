@@ -156,20 +156,13 @@ void led_set(unsigned char n, unsigned char color)
 
 void led_push()
 {
-	led_set(9, 1);
 	for (int i = 0; i<36; i++){
 		
 		if (leds[i] == 1) SDI_PORT |= (1 << SDI);
 		else SDI_PORT &= ~(1<<SDI);
-
-		
-
 		
 		CLK_PORT |= (1 << CLK);
 		CLK_PORT &= ~(1 << CLK);
-		
-		
-		
 	}
 	LA_PORT |= (1 << LA);
 	LA_PORT &= ~(1 << LA); // Latch output

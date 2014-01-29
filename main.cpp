@@ -36,7 +36,7 @@ void read_silent_values()
 	x[1] = adc[POT2]/200; // freq or brigthness
 	x[2] = adc[POT3]/200; // sensivity
 	
-	VOL = x[0] - 1;
+	VOL = 4 - x[0];
 	SPK_FREQ = x[1];
 	SENSIVITY = x[2];
 	
@@ -135,7 +135,7 @@ int main(void)
 	led_clear();
 	led_push();	
 	speaker_init();
-	rfm12_init();
+	//rfm12_init();
 	
 	sei();	
 	_delay_ms(200);	
@@ -144,9 +144,10 @@ int main(void)
 	branie_counter = 500;
 	led_clear();
 	led_push();
+
 	while(1)
 	{     
-		rfm12_tick();
+		//rfm12_tick();
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
