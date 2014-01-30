@@ -128,6 +128,7 @@ void config_mode()
 
 int main(void) 
  {  
+ 	uint8_t tv[] = "a";
 
  	read_config(); 
 	pot_init();
@@ -146,6 +147,7 @@ int main(void)
 
 	while(1)
 	{     
+		rfm12_tx (sizeof(tv), 0, tv);
 		rfm12_tick();
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)

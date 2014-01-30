@@ -82,6 +82,8 @@ void led_power(unsigned char p)
 	OCR1A =  255-p;
 }
 
+unsigned static char pending_changes = 0;
+
 
 void led_set(unsigned char n, unsigned char color)
 {
@@ -153,10 +155,17 @@ void led_set(unsigned char n, unsigned char color)
 			else
 				PORTD &= ~(1<< PB7);                                  
 		}
+
+		if(n != 9)
+			pending_changes = 1;
 }
 
 void led_push()
 {
+	if(pending_changes == 0)
+		return;
+
+	pending_changes = 0;
 
 	for (int i = 0; i<36; i++){
 		
@@ -176,7 +185,7 @@ void led_push()
 void led_clear()
 {
 	for (int i=0; i<36; i++) leds[i] = 0;
-	
+	pending_changes = 1;
 	led_enable(0);
 }
 
