@@ -133,8 +133,7 @@ int main(void)
 	pot_init();
 	led_init();
 	button_init();
-	led_clear();
-	led_push();	
+	led_clear();	
 	speaker_init();
 	rfm12_init();
 	
@@ -144,7 +143,6 @@ int main(void)
 	
 	branie_counter = 500;
 	led_clear();
-	led_push();
 
 	while(1)
 	{     
@@ -167,7 +165,7 @@ int main(void)
 					led_set(6, 1);
 					led_set(7,1);
 					led_set(8,1);
-					led_push();			
+						
 
 					set_custom_speaker(90, 130);
 					set_speaker(1);
@@ -178,7 +176,7 @@ int main(void)
 					led_set(6, 2);
 					led_set(7,1);
 					led_set(8,1);
-					led_push();		
+					
 
 					set_speaker(0);		
 				}
@@ -187,7 +185,7 @@ int main(void)
 			{
 				set_speaker(0);
 				led_clear();
-				led_push();
+		
 			}
 		}
 		else if(THEFT_ALARM == 2)
@@ -195,7 +193,7 @@ int main(void)
 			theft_alarm_counter = 0;
 			set_speaker(0);
 			led_clear();
-			led_push();
+	
 			led_set(8, 0);
 			THEFT_ALARM  = 0;
 		}

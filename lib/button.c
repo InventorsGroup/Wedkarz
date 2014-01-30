@@ -46,6 +46,9 @@ unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
+	if(OCR1A != 255)
+		led_push();
+
 	if(ANTI_THEFT > 0 || TIME > 1)
 	{
 		led_set(9, 1); //led IR
@@ -88,6 +91,7 @@ ISR(TIMER0_COMPA_vect)
 			config_blink_counter = 0;
 			led_set(8,1);
 			led_push();
+			
 		}
 		else if(config_blink_counter > 30)
 		{
@@ -173,14 +177,15 @@ ISR(TIMER0_COMPA_vect)
 					if(branie_counter % 2 == 0)
 					{
 						led_set(6, COLOR);
-						led_push();
+						
 					}
 					else
 					{
 						led_set(6, 0);
-						led_push();
+						
 					}
 					branie_counter2 = 0;
+					led_push();
 				}
 			}			
 			if(branie_counter == 400)
@@ -215,17 +220,16 @@ ISR(TIMER0_COMPA_vect)
 				night_tmp--;
 			}
 
-			if(night_tmp > 30)
+			if(night_tmp == 30)
 			{
 				led_set(8, 1);
-				led_push();
+				
 			}
 			else if(night_tmp == 0)
 			{	
 				led_set(8, 0);
-				led_push();
 			}
-
+			led_push();
 
 		}
 
@@ -336,7 +340,7 @@ ISR(PCINT0_vect) // CENTER_BTN
 			center_btn_counter = 1;
 		else if(STATUS == 5 && CONF_ENTER == 0)
 		{
-					led_set(8, 1);
+			led_set(8, 1);
 			led_push();
 			_delay_ms(100);
 			led_set(8, 0);
