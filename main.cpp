@@ -81,7 +81,8 @@ volatile int adc_diff = 0;
 			SENSIVITY = x[2];
 			led_bar(x[2]+ 1, COLOR, 1);
 			x_prev2[2] = adc[POT3];	
-			x_prev[2] = x[2];			
+			x_prev[2] = x[2];	
+			play_speaker(100);		
 		}
 	
 }
@@ -135,7 +136,7 @@ int main(void)
 	led_clear();
 	led_push();	
 	speaker_init();
-	//rfm12_init();
+	rfm12_init();
 	
 	sei();	
 	_delay_ms(200);	
@@ -147,7 +148,7 @@ int main(void)
 
 	while(1)
 	{     
-		//rfm12_tick();
+		rfm12_tick();
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
@@ -157,36 +158,36 @@ int main(void)
 
 		if(THEFT_ALARM == 1)
 		{
-			
-
 			if(theft_alarm_counter < 300)		
 			{		
-				set_speaker(1);
-				if((theft_alarm_counter / 10) % 2 == 0)
+				
+				if(theft_alarm_light_counter < 6)
+				{
+					led_bar(6, 1, 1);
+					led_set(6, 1);
+					led_set(7,1);
+					led_set(8,1);
+					led_push();			
+
 					set_custom_speaker(90, 130);
+					set_speaker(1);
+				}
 				else
-					set_custom_speaker(90, 170);
+				{
+					led_bar(6, 2, 1);
+					led_set(6, 2);
+					led_set(7,1);
+					led_set(8,1);
+					led_push();		
+
+					set_speaker(0);		
+				}
 			}
 			else if(theft_alarm_counter == 300)
 			{
 				set_speaker(0);
-			}
-
-			if(theft_alarm_light_counter < 15)
-			{
-				led_bar(6, 1, 1);
-				led_set(6, 1);
-				led_set(7,1);
-				led_set(8,1);
-				led_push();			
-			}
-			else
-			{
-				led_bar(6, 2, 1);
-				led_set(6, 2);
-				led_set(7,1);
-				led_set(8,1);
-				led_push();				
+				led_clear();
+				led_push();
 			}
 		}
 		else if(THEFT_ALARM == 2)

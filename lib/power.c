@@ -72,7 +72,8 @@ void wake_up()
             _delay_ms(50);
         }
 
-        play_speaker(500);
+        set_custom_speaker(15, SPK_FREQ);
+        play_speaker_custom(400);
         led_bar_clear();
     }
 

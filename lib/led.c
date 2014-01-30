@@ -156,6 +156,7 @@ void led_set(unsigned char n, unsigned char color)
 
 void led_push()
 {
+
 	for (int i = 0; i<36; i++){
 		
 		if (leds[i] == 1) SDI_PORT |= (1 << SDI);

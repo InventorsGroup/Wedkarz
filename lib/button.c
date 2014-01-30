@@ -28,7 +28,7 @@ volatile unsigned char center_btn_counter = 0;
 volatile unsigned char top_btn_counter = 0;
 volatile unsigned char spk_tmp = 0;
 volatile unsigned char night_tmp = 0;
-volatile unsigned int branie_counter = 500;
+volatile unsigned int branie_counter = 500, branie_counter2 = 0;
 volatile unsigned char branie_dir = 0;
 volatile unsigned char config_blink_counter = 0;
 volatile unsigned int theft_alarm_counter = 0;
@@ -46,23 +46,15 @@ unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
-		
-	if(TIME > 1 && silent_time > 0)
+	if(ANTI_THEFT > 0 || TIME > 1)
 	{
-		silent_time++;
-
-		if(silent_time > TIME * 200)
-			silent_time = 0;
-
+		led_set(9, 1); //led IR
 	}
-
-	if(kontaktr_set_delay > 0)
+	else
 	{
-		kontaktr_set_delay++;
-
-		if(kontaktr_set_delay > 10)
-			kontaktr_set_delay = 0;
+		led_set(9,0);
 	}
+	
 	
 	if(spk_cnt > 0)
 	{
@@ -80,7 +72,7 @@ ISR(TIMER0_COMPA_vect)
 		if(theft_alarm_counter < 310)
 			theft_alarm_counter++;
 
-		if(theft_alarm_light_counter < 30)
+		if(theft_alarm_light_counter < 10)
 			theft_alarm_light_counter++;
 		else
 			theft_alarm_light_counter = 0;
@@ -105,6 +97,23 @@ ISR(TIMER0_COMPA_vect)
 	} 
 	else if(STATUS != 0)
 	{
+			if(TIME > 1 && silent_time > 0)
+			{
+				silent_time++;
+
+				if(silent_time > TIME * 200)
+					silent_time = 0;
+
+			}
+
+			if(kontaktr_set_delay > 0)
+			{
+				kontaktr_set_delay++;
+
+				if(kontaktr_set_delay > 10)
+					kontaktr_set_delay = 0;
+			}
+
 		if(kometa_cnter > 0)
 		{
 			kometa_cnter++;
@@ -157,15 +166,21 @@ ISR(TIMER0_COMPA_vect)
 			branie_counter++;			
 			if(branie_dir == 0)
 			{
-				if(branie_counter % 2 == 0)
+				branie_counter2++;
+
+				if(branie_counter2 > 6)
 				{
-					led_set(6, COLOR);
-					led_push();
-				}
-				else
-				{
-					led_set(6, 0);
-					led_push();
+					if(branie_counter % 2 == 0)
+					{
+						led_set(6, COLOR);
+						led_push();
+					}
+					else
+					{
+						led_set(6, 0);
+						led_push();
+					}
+					branie_counter2 = 0;
 				}
 			}			
 			if(branie_counter == 400)
@@ -241,7 +256,6 @@ ISR(TIMER0_COMPA_vect)
 						led_push();
 						_delay_ms(300);
 						led_set(6, 0);
-						led_set(9, 1); //led IR
 						led_push();
 						theft_alarm_counter = 0;
 					}
@@ -251,7 +265,6 @@ ISR(TIMER0_COMPA_vect)
 						led_push();
 						_delay_ms(300);
 						led_set(6, 0);
-						led_set(9,0);
 						led_push();
 
 
@@ -281,12 +294,6 @@ ISR(TIMER0_COMPA_vect)
 				
 				branie_counter = 500;
 				led_clear();
-				
-				if(ANTI_THEFT > 0)
-				{
-					led_set(9, 1); //led IR
-					led_push();
-				}
 
 				center_btn_counter = 0;
 			}

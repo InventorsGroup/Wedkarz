@@ -4,7 +4,7 @@ unsigned volatile char spk_cnt = 0;
 unsigned volatile char SPK_FREQ = 0;
 volatile char VOL = 0;
 unsigned volatile char vol_tab[] = {15, 30, 60, 80, 90};
-unsigned volatile char freq_tab[] = {80, 110, 140, 160, 180, 200, 220};
+unsigned volatile char freq_tab[] = {90, 110, 140, 160, 180, 200, 250};
 volatile unsigned int silent_time = 0;
 unsigned volatile char TIME = 1;
 unsigned volatile char ACTUAL_FREQ = 100;
@@ -70,6 +70,20 @@ void play_speaker_alt(int length)
 		ACTUAL_VOL = vol_tab[VOL];
 		set_speaker(1);
 		spk_cnt = length / 50;
+}
+
+void play_speaker_custom(int length)
+{
+	if(((TIME > 1 && silent_time > 0) || VOL == -1) &&  THEFT_ALARM == 0)
+	{
+		return;
+	}
+
+	if(spk_cnt != 0)
+		return;
+
+	set_speaker(1);
+	spk_cnt = length / 50;
 }
 
 void set_custom_speaker(unsigned char v, unsigned char f)
