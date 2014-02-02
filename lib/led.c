@@ -25,7 +25,8 @@ volatile static unsigned char led_array[3][8] = {{0, 3, 6, 11, 12, 23, 27, 20},
 volatile static unsigned char leds[36];
 void led_init()
 {
-
+	//disable leds
+	led_enable(0);
 	//clear the array
 	for (int i=0; i<36; i++) leds[i] = 0;
 	
@@ -34,7 +35,8 @@ void led_init()
 	OE_DDR |= (1 << OE);
 	CLK_DDR |= (1 << CLK);
 	LA_DDR |= (1 << LA);
-
+	led_enable(1);
+	
 	//PWM
 	TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
 	TCCR1B |= (1 << CS11) | (1 << CS10);
@@ -55,17 +57,14 @@ void led_init()
 
 void led_enable(unsigned char s)
 {
-	if (s > 0 && OCR1A == 255) 
-	{		
-		PORTD |= (1 << PD5);
-		_delay_ms(20);
-
+	if (s > 0) 
+	{
 		led_power(led_pwr);
+		
 	}
-	else if(s == 0)
+	else 
 	{
 		OCR1A = 255;
-		PORTD &= ~(1 << PD5);
 	}
 }
 
@@ -81,8 +80,6 @@ void led_power(unsigned char p)
 	led_pwr =p;
 	OCR1A =  255-p;
 }
-
-unsigned static char pending_changes = 0;
 
 
 void led_set(unsigned char n, unsigned char color)
@@ -155,17 +152,10 @@ void led_set(unsigned char n, unsigned char color)
 			else
 				PORTD &= ~(1<< PB7);                                  
 		}
-
-		if(n != 9)
-			pending_changes = 1;
 }
 
 void led_push()
 {
-	if(pending_changes == 0)
-		return;
-
-	pending_changes = 0;
 
 	for (int i = 0; i<36; i++){
 		
@@ -179,19 +169,20 @@ void led_push()
 	LA_PORT &= ~(1 << LA); // Latch output
 
 	led_enable(1);
+
 	led_turn_off = 1;
 }
 
 void led_clear()
 {
 	for (int i=0; i<36; i++) leds[i] = 0;
-	pending_changes = 1;
-	led_enable(0);
+	led_push();
 }
 
 void led_bar_clear()
 {
 	for (int i = 0; i < 6; i++) led_set(i, 0);
+	led_push();
 }
 
 void led_bar(unsigned char n, unsigned char c, unsigned char dir)
@@ -211,7 +202,5 @@ void led_bar2(unsigned char n, unsigned char c, unsigned char dir, unsigned char
 		if (dir > 0) led_set(5-i, c);
 		else led_set(i, c);
 	}
-
 	led_push();
-	
 }
