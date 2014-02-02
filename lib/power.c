@@ -35,6 +35,7 @@ void wake_up()
 {	
 	EIMSK &= ~(1 << INT1);
 	SMCR &= ~(1 << SE);
+
     
 	if(PREV_STATUS != 0 && PREV_STATUS != 5)
 		STATUS = PREV_STATUS;

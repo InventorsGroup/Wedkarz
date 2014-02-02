@@ -24,6 +24,7 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				_delay_ms(100);
 				led_set(6, 0);
 				led_push();
+				comm_wywolanie = 2;
 				PAIRING = 0;
 				return;
 			}
@@ -54,7 +55,7 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				break;
 
 				case 0x0C:
-					comm_wywolanie = 1;
+					//comm_wywolanie = 1;
 				break;
 			}
 

@@ -150,7 +150,10 @@ void send_commands()
 		comm[1] = SYG_ID[1];
 		comm[2] = SYG_ID[2];
 		comm[3] = SYG_ID[3];
-		comm[4] = 0x03;
+		if(comm_wywolanie == 2)
+			comm[4] = 0x04;
+		else
+			comm[4] = 0x03;
 		comm[5] = COLOR;
 		rfm12_tx(6, 0, comm);	
 		comm_wywolanie = 0;

@@ -24,7 +24,7 @@ void button_init()
 	OCR0A = 255;
 }
 
-volatile unsigned char comm_branie = 0;
+volatile unsigned char comm_branie = 2;
 volatile unsigned char center_btn_counter = 0;
 volatile unsigned char top_btn_counter = 0;
 volatile unsigned char spk_tmp = 0;
@@ -38,6 +38,8 @@ volatile unsigned char kontaktr_set_delay = 0;
 volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
+volatile unsigned char kolanko_center_btn = 0;
+
 
 //od konaktrona
 unsigned volatile char kon1 = 0;
@@ -47,6 +49,15 @@ unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
+
+	if(kolanko_center_btn > 0)
+	{
+		kolanko_center_btn++;
+
+		if(kolanko_center_btn > 10)
+			kolanko_center_btn = 0;
+	}
+
 	if(ANTI_THEFT > 0 || TIME > 1)
 	{
 		led_set(9, 1); //led IR
@@ -80,6 +91,9 @@ ISR(TIMER0_COMPA_vect)
 
 	}
 
+	if(CONF_ENTER== 1)
+		return;
+
 	if(STATUS == 5)
 	{
 		config_blink_counter++;
@@ -101,15 +115,15 @@ ISR(TIMER0_COMPA_vect)
 
 		if(center_btn_counter > 0)
 		{
-			if(CENTER_BTN)
+			kolanko_center_btn = 1;
+			if(CENTER_BTN && center_btn_counter < 40)
 			{
 				center_btn_counter++;
-
-				if(center_btn_counter > 30) //parowanko
-				{
-					PAIRING = 1;
-					center_btn_counter = 0;
-				}
+			}
+			else if(center_btn_counter > 30) //parowanko
+			{
+				PAIRING = 1;
+				center_btn_counter = 0;
 			}
 			else if(center_btn_counter < 15) //zapis
 			{
@@ -140,11 +154,14 @@ ISR(TIMER0_COMPA_vect)
 	            while (!eeprom_is_ready());
 	            center_btn_counter = 0;
 				GO_TO_POWER_DOWN = 1;
-			}
+			} 
+			else
+				center_btn_counter = 0;
+
 		}
 
 	} 
-	else if(STATUS != 0)
+/*	else if(STATUS != 0)
 	{
 			if(TIME > 1 && silent_time > 0)
 			{
@@ -290,7 +307,8 @@ ISR(TIMER0_COMPA_vect)
 		{
 			if(CENTER_BTN)
 			{
-				center_btn_counter++;
+				if(center_btn_counter < 40)
+					center_btn_counter++;
 
 				if(center_btn_counter > 30)
 				{
@@ -347,13 +365,14 @@ ISR(TIMER0_COMPA_vect)
 			}
 		}
 	}
+*/
 
-
-	if(TOP_BTN && top_btn_counter > 0)
+	/*if(TOP_BTN && top_btn_counter > 0 && center_btn_counter == 0)
 	{
-		top_btn_counter++;
+		if(top_btn_counter < 40)
+			top_btn_counter++;
 
-		if(top_btn_counter == 30)
+		if(top_btn_counter > 30)
 		{			
 			for(int i = 0; i < 6; i++)
 			{
@@ -367,10 +386,15 @@ ISR(TIMER0_COMPA_vect)
 				_delay_ms(50);
 			}	
 
-			GO_TO_POWER_DOWN = 1;
 			top_btn_counter = 0;
+			GO_TO_POWER_DOWN = 1;
 		}
-	}
+	}else if(top_btn_counter > 0)
+		top_btn_counter = 0;*/
+
+	if(center_btn_counter > 0 && !CENTER_BTN)
+		center_btn_counter = 0;
+
 
 }
 
@@ -378,17 +402,17 @@ ISR(TIMER0_COMPA_vect)
 ISR(PCINT0_vect) // CENTER_BTN
 {
 	
-	if(CENTER_BTN)
+	if(CENTER_BTN && center_btn_counter == 0)
 	{
-		if(STATUS != 5)
-			center_btn_counter = 1;
-		else if(STATUS == 5 && CONF_ENTER == 0)
+		_delay_ms(10);
+		if(CONF_ENTER == 0)
 		{
 			center_btn_counter = 1;
+			kolanko_center_btn = 1;
 		}
-		else if(CONF_ENTER == 1)
+		else
 		{
-			_delay_ms(500);
+			while(CENTER_BTN);
 			CONF_ENTER = 0;
 		}
 
@@ -472,13 +496,16 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 ISR(PCINT2_vect) // TOP_BTN
 {	
 	
-	if(TOP_BTN)
+	/*if(TOP_BTN && top_btn_counter == 0 && center_btn_counter == 0 && kolanko_center_btn == 0)
 	{
+		_delay_ms(10);
+		led_set(4, 1);
+		led_push();
 		top_btn_counter = 1;
 	}
 	else
 	{
 		kontaktron_check();
-	}
+	}*/
 }
 
