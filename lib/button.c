@@ -88,13 +88,61 @@ ISR(TIMER0_COMPA_vect)
 		{
 			config_blink_counter = 0;
 			led_set(8,1);
+			if(PAIRING > 0) led_set(7, 1);
 			led_push();
 		}
 		else if(config_blink_counter > 30)
 		{
 			led_set(8,0);
+			led_set(7, 0);
 			led_push();
 		}
+
+
+		if(center_btn_counter > 0)
+		{
+			if(CENTER_BTN)
+			{
+				center_btn_counter++;
+
+				if(center_btn_counter > 30) //parowanko
+				{
+					PAIRING = 1;
+					center_btn_counter = 0;
+				}
+			}
+			else if(center_btn_counter < 15) //zapis
+			{
+				led_set(8, 1);
+				led_push();
+				_delay_ms(100);
+				led_set(8, 0);
+				led_push();
+				_delay_ms(100);
+				led_set(8, 1);
+				led_push();
+				_delay_ms(100);
+				led_set(8, 0);
+				led_push();
+
+				while (!eeprom_is_ready());
+	            eeprom_write_byte((uint8_t*)0, (uint8_t)COLOR);
+	            while (!eeprom_is_ready());
+	            eeprom_write_byte((uint8_t*)8, (uint8_t)BRIGHTNESS);
+	            while (!eeprom_is_ready());
+	            eeprom_write_byte((uint8_t*)16, (uint8_t)TIME);
+	            while (!eeprom_is_ready());
+	            eeprom_write_byte((uint8_t*)24, (uint8_t)SYG_ID[1]);
+	            while (!eeprom_is_ready());
+	            eeprom_write_byte((uint8_t*)32, (uint8_t)SYG_ID[2]);
+	            while (!eeprom_is_ready());
+	            eeprom_write_byte((uint8_t*)40, (uint8_t)SYG_ID[3]);
+	            while (!eeprom_is_ready());
+	            center_btn_counter = 0;
+				GO_TO_POWER_DOWN = 1;
+			}
+		}
+
 	} 
 	else if(STATUS != 0)
 	{
@@ -336,26 +384,7 @@ ISR(PCINT0_vect) // CENTER_BTN
 			center_btn_counter = 1;
 		else if(STATUS == 5 && CONF_ENTER == 0)
 		{
-					led_set(8, 1);
-			led_push();
-			_delay_ms(100);
-			led_set(8, 0);
-			led_push();
-			_delay_ms(100);
-			led_set(8, 1);
-			led_push();
-			_delay_ms(100);
-			led_set(8, 0);
-			led_push();
-
-			while (!eeprom_is_ready());
-            eeprom_write_byte((uint8_t*)0, (uint8_t)COLOR);
-            while (!eeprom_is_ready());
-            eeprom_write_byte((uint8_t*)8, (uint8_t)BRIGHTNESS);
-            while (!eeprom_is_ready());
-            eeprom_write_byte((uint8_t*)16, (uint8_t)TIME);
-            while (!eeprom_is_ready());
-			GO_TO_POWER_DOWN = 1;
+			center_btn_counter = 1;
 		}
 		else if(CONF_ENTER == 1)
 		{

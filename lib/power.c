@@ -6,6 +6,8 @@ volatile unsigned char PREV_STATUS = 1;
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char CONF_ENTER = 0;
+volatile unsigned char PAIRING = 0;
+volatile unsigned char comm_wywolanie = 0;
 
 void power_down()
 {	
@@ -74,6 +76,7 @@ void wake_up()
         set_custom_speaker(15, SPK_FREQ);
         play_speaker_custom(400);
         led_bar_clear();
+        comm_wywolanie = 1;
     }
 
 }

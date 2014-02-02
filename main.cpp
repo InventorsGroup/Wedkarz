@@ -17,6 +17,9 @@ void read_config()
 	COLOR = eeprom_read_byte((uint8_t*)0);
     BRIGHTNESS = eeprom_read_byte((uint8_t*)8);
     TIME = eeprom_read_byte((uint8_t*)16);
+    SYG_ID[1] = eeprom_read_byte((uint8_t*)24);
+    SYG_ID[2] = eeprom_read_byte((uint8_t*)32);
+    SYG_ID[3] = eeprom_read_byte((uint8_t*)40);
 
     if(COLOR > 6 || COLOR < 1)
     	COLOR = 1;
@@ -97,7 +100,8 @@ void config_mode()
 			COLOR = x[0]+1;
 			led_bar(6, COLOR, 1);
 			x_prev[0] = x[0];	
-			x_prev2[0] = adc[POT1];			
+			x_prev2[0] = adc[POT1];	
+			comm_wywolanie = 1;		
 		}
 
 		adc_diff = adc[POT2]- x_prev2[1];
@@ -127,14 +131,29 @@ void config_mode()
 
 void send_commands()
 {
-	uint8_t comm[2];
+	uint8_t comm[6];
 	if(comm_branie == 1 || comm_branie == 0)
 	{
-		comm[0] = 0x01;
-		comm[1] = comm_branie+1;
-		rfm12_tx(4, 0, SYG_ID);
-		rfm12_tx(2, 0, comm);
+		comm[0] = SYG_ID[0];
+		comm[1] = SYG_ID[1];
+		comm[2] = SYG_ID[2];
+		comm[3] = SYG_ID[3];
+		comm[4] = 0x01;
+		comm[5] = comm_branie+1;
+		rfm12_tx(6, 0, comm);
 		comm_branie = 2;
+	}
+
+	if(comm_wywolanie > 0)
+	{
+		comm[0] = SYG_ID[0];
+		comm[1] = SYG_ID[1];
+		comm[2] = SYG_ID[2];
+		comm[3] = SYG_ID[3];
+		comm[4] = 0x03;
+		comm[5] = COLOR;
+		rfm12_tx(6, 0, comm);	
+		comm_wywolanie = 0;
 	}
 }
 
@@ -160,21 +179,20 @@ int main(void)
 	led_push();
 
 	uint8_t v[] = "a";
+	uint8_t pp = 1;
 	while(1)
 	{     
 
 		if (rfm12_rx_status() == STATUS_COMPLETE)
-        {        
+        {      
+
             bufcontents = rfm12_rx_buffer();
      		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
             rfm12_rx_clear();
         }
 
         rfm12_poll();
-       
-       rfm12_tx(1, 0, v);
-       	//send_commands();
-       
+       	send_commands();
 		rfm12_tick();
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
