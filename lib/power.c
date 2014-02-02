@@ -1,12 +1,11 @@
 #include "power.h"
 
+
 volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
 volatile unsigned char PREV_STATUS = 1;
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char CONF_ENTER = 0;
-
-
 
 void power_down()
 {	
@@ -26,7 +25,7 @@ void power_down()
 
 ISR(INT1_vect)
 {	
-	wake_up();
+   wake_up();
 }
 
 

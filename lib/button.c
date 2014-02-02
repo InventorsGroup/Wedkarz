@@ -16,7 +16,7 @@ void button_init()
 	PCICR |= (1 << PCIE1) | (1 << PCIE0) | (1 << PCIE2);
 	PCMSK0 |= (1 << PCINT0);
 	PCMSK1 |= (1 << PCINT11);
-	PCMSK2 |= (1 << PCINT23) | (1 << PCINT18);
+	PCMSK2 |= (1 << PCINT23) | (1 << PCINT18) ;
 
 	TCCR0A |= (1 << WGM01);
 	TCCR0B |= (1 << CS00) | (1 << CS02);
@@ -24,6 +24,7 @@ void button_init()
 	OCR0A = 255;
 }
 
+volatile unsigned char comm_branie = 0;
 volatile unsigned char center_btn_counter = 0;
 volatile unsigned char top_btn_counter = 0;
 volatile unsigned char spk_tmp = 0;
@@ -267,7 +268,6 @@ ISR(TIMER0_COMPA_vect)
 						led_set(6, 0);
 						led_push();
 
-
 						THEFT_ALARM = 2;
 					}
 				
@@ -404,11 +404,13 @@ void kontaktron_check()
                 {            
                 	branie_dir = dir;     
             		kometa_cnter = 1;
+            		comm_branie = dir;
             	}
             	else
             	if(STATUS == 3 || STATUS == 4)
             	{
             		branie_dir = dir;
+            		comm_branie = dir;
             	}
 
 
@@ -449,5 +451,5 @@ ISR(PCINT2_vect) // TOP_BTN
 	{
 		kontaktron_check();
 	}
-
 }
+

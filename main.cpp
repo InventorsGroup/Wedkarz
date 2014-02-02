@@ -1,13 +1,13 @@
 #include <avr/io.h> 
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
 
 #include "config.h"
 #include "lib/led.h"
 #include "lib/pot.h"
 #include "lib/speaker.h"
 #include "lib/button.h"
+#include "lib/comm.h"
 #include "lib/rfm12.h"
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
@@ -125,7 +125,20 @@ void config_mode()
 		
 }
 
+void send_commands()
+{
+	uint8_t comm[2];
+	if(comm_branie == 1 || comm_branie == 0)
+	{
+		comm[0] = 0x01;
+		comm[1] = comm_branie+1;
+		rfm12_tx(4, 0, SYG_ID);
+		rfm12_tx(2, 0, comm);
+		comm_branie = 2;
+	}
+}
 
+volatile uint8_t *bufcontents;
 int main(void) 
  {  
 
@@ -146,8 +159,22 @@ int main(void)
 	led_clear();
 	led_push();
 
+	uint8_t v[] = "a";
 	while(1)
 	{     
+
+		if (rfm12_rx_status() == STATUS_COMPLETE)
+        {        
+            bufcontents = rfm12_rx_buffer();
+     		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
+            rfm12_rx_clear();
+        }
+
+        rfm12_poll();
+       
+       rfm12_tx(1, 0, v);
+       	//send_commands();
+       
 		rfm12_tick();
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
@@ -199,9 +226,6 @@ int main(void)
 			led_set(8, 0);
 			THEFT_ALARM  = 0;
 		}
-
-
-	
 
 		if(STATUS == 5)
 		{

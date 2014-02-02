@@ -20,6 +20,7 @@ OBJECTS    += $(LIBDIR)/speaker.o
 OBJECTS    += $(LIBDIR)/button.o
 OBJECTS    += $(LIBDIR)/power.o
 OBJECTS		+= $(LIBDIR)/rfm12.o
+OBJECTS += $(LIBDIR)/comm.o
 FUSES      = -U lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m
 
 # Tune the lines below only if you know what you are doing:
