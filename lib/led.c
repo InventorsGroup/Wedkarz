@@ -148,9 +148,9 @@ void led_set(unsigned char n, unsigned char color)
 		if(n == 6) //swinger
 		{
 			if(color > 0)
-				PORTD |= (1 << PB7);
+				PORTB |= (1 << PB7);
 			else
-				PORTD &= ~(1<< PB7);                                  
+				PORTB &= ~(1<< PB7);                                  
 		}
 }
 
