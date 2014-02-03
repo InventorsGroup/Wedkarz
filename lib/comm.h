@@ -3,6 +3,7 @@
 #include <util/delay.h>
 #include "power.h"
 #include "led.h"
+#include "speaker.h"
 
 
 extern uint8_t SYG_ID[];

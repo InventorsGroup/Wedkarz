@@ -15,4 +15,6 @@ extern volatile unsigned char NIGHT;
 extern volatile unsigned char ANTI_THEFT;
 extern volatile unsigned char CONF_ENTER;
 extern volatile unsigned char PAIRING;
+extern unsigned volatile char SENSIVITY;
 extern volatile unsigned char comm_wywolanie;
+extern volatile unsigned char comm_changed;

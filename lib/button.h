@@ -7,7 +7,7 @@
 #include "power.h"
 #include "pot.h"
 #include "comm.h"
-extern unsigned volatile char SENSIVITY;
+
 extern volatile unsigned int theft_alarm_counter;
 extern volatile unsigned char theft_alarm_light_counter;
 extern volatile unsigned char kontaktr_set_delay;

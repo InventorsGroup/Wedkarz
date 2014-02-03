@@ -1,6 +1,6 @@
 #include "button.h"
 
-unsigned volatile char SENSIVITY = 1;
+
 void button_init()
 {
 	DDRB &= ~(1 << PB0);
@@ -403,7 +403,6 @@ ISR(PCINT0_vect) // CENTER_BTN
 		}
 		else
 		{
-			while(CENTER_BTN);
 			CONF_ENTER = 0;
 		}
 
