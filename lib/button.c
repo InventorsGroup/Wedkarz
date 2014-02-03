@@ -385,8 +385,6 @@ ISR(TIMER0_COMPA_vect)
 	}else if(top_btn_counter > 0)
 		top_btn_counter = 0;
 
-	if(center_btn_counter > 0 && !CENTER_BTN)
-		center_btn_counter = 0;
 
 
 }
@@ -483,9 +481,10 @@ ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 
 ISR(PCINT2_vect) // TOP_BTN
 {	
-	_delay_ms(10);
+	
 	if(TOP_BTN && top_btn_counter == 0 && center_btn_counter == 0)
 	{
+		_delay_ms(10);
 		top_btn_counter = 1;
 	}
 	else
