@@ -12,13 +12,6 @@
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
 
-volatile uint8_t in = 0;
-ISR(INT1_vect)
-{	
-    wake_up();
-    rfm12_wakeup();
-}
-
 void read_config()
 {
 	COLOR = eeprom_read_byte((uint8_t*)0);
@@ -215,7 +208,6 @@ int main(void)
 
 	while(1)
 	{     
-
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
@@ -288,17 +280,14 @@ int main(void)
 			}
 
 			if (rfm12_rx_status() == STATUS_COMPLETE)
-		    {   
-		    	led_set(2,2);   
-		    	led_push();
-
+		    {      
 		        bufcontents = rfm12_rx_buffer();
 		   		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
 	            rfm12_rx_clear();
 		    }
 
-		    send_commands();
 		    rfm12_poll();
+		    send_commands();
 			rfm12_tick();
 		
 		}
