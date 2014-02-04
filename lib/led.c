@@ -63,14 +63,7 @@ void led_enable(unsigned char s)
 		_delay_ms(20);
 		led_power(led_pwr);
 		
-	}
-	else if(s == 0)
-	{
-		PORTD &= ~(1 << PD5);
-		PORTC &= ~(1 << PC0);
-		PORTB &= ~(1 << PB7);
-		CLK_PORT &= ~(1 << CLK);
-		SDI_PORT &= ~(1 << SDI);
+	};
 		OCR1A = 255;
 	}
 }

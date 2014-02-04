@@ -211,7 +211,7 @@ int main(void)
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
-			rfm12_sleep();
+		//	rfm12_sleep();
 			power_down();
 		}
 
@@ -280,7 +280,7 @@ int main(void)
 			}
 
 			if (rfm12_rx_status() == STATUS_COMPLETE)
-		    {      
+			{
 		        bufcontents = rfm12_rx_buffer();
 		   		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
 	            rfm12_rx_clear();
