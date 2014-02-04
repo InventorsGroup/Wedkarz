@@ -12,7 +12,6 @@ extern volatile unsigned char STATUS;
 extern volatile unsigned char GO_TO_POWER_DOWN;
 extern volatile unsigned char NIGHT;
 extern volatile unsigned char ANTI_THEFT;
-extern volatile unsigned char WAKE_RFM;
 extern volatile unsigned char CONF_ENTER;
 extern volatile unsigned char PAIRING;
 extern unsigned volatile char SENSIVITY;

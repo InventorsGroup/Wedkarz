@@ -15,21 +15,8 @@ volatile unsigned int x_prev[3], x[3], x_prev2[3];
 volatile uint8_t in = 0;
 ISR(INT1_vect)
 {	
-    if(STATUS == 0)
-        wake_up();
-    else if(!TOP_BTN && !CENTER_BTN)
-    {
-        in++;
-
-        if(in % 2 == 0)
-        led_set(6,3);
-        else
-        led_set(6,0);
-
-        led_push();
-
-         rfm12_poll();
-    }
+    wake_up();
+    rfm12_wakeup();
 }
 
 void read_config()
@@ -228,11 +215,6 @@ int main(void)
 
 	while(1)
 	{     
-		if(WAKE_RFM > 0)
-		{
-			WAKE_RFM = 0;
-			rfm12_wakeup();
-		}
 
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
@@ -306,14 +288,17 @@ int main(void)
 			}
 
 			if (rfm12_rx_status() == STATUS_COMPLETE)
-		    {      
+		    {   
+		    	led_set(2,2);   
+		    	led_push();
+
 		        bufcontents = rfm12_rx_buffer();
 		   		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
 	            rfm12_rx_clear();
 		    }
 
-		   
 		    send_commands();
+		    rfm12_poll();
 			rfm12_tick();
 		
 		}

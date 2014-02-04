@@ -125,6 +125,8 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 {
 	RFM12_INT_OFF();
 	uint8_t status;
+
+	uint16_t stat = rfm12_read(RFM12_CMD_STATUS);
 	
 	//if receive mode is not disabled (default)
 	#if !(RFM12_TRANSMIT_ONLY)
