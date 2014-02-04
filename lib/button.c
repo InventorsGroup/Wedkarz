@@ -385,6 +385,8 @@ ISR(TIMER0_COMPA_vect)
 	}else if(top_btn_counter > 0)
 		top_btn_counter = 0;
 
+	if(center_btn_counter > 0 && !CENTER_BTN)
+		center_btn_counter = 0;
 
 
 }

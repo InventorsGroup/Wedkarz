@@ -675,3 +675,23 @@ void rfm12_init(void)
 	RFM12_INT_ON();	
 }
 
+void rfm12_sleep(void)
+{
+
+	rfm12_data(0xE000 | 0x0500);
+	rfm12_data(0x8205);
+
+/*	rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC);
+	rfm12_data(RFM12_CMD_TX | 0xaa);
+	uint8_t status = rfm12_read(RFM12_CMD_STATUS);
+
+	rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC);
+	rfm12_data(RFM12_CMD_WAKEUP | (0xff & 0x1fff));
+	rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC | RFM12_PWRMGT_EW);*/
+
+}
+void rfm12_wakeup(void)
+{
+
+}
+

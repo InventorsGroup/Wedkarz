@@ -57,13 +57,20 @@ void led_init()
 
 void led_enable(unsigned char s)
 {
-	if (s > 0) 
+	if (s > 0 && OCR1A == 255) 
 	{
+		PORTD |= (1 << PD5);
+		_delay_ms(20);
 		led_power(led_pwr);
 		
 	}
-	else 
+	else if(s == 0)
 	{
+		PORTD &= ~(1 << PD5);
+		PORTC &= ~(1 << PC0);
+		PORTB &= ~(1 << PB7);
+		CLK_PORT &= ~(1 << CLK);
+		SDI_PORT &= ~(1 << SDI);
 		OCR1A = 255;
 	}
 }

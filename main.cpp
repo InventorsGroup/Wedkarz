@@ -188,10 +188,11 @@ volatile uint8_t *bufcontents;
 int main(void) 
  {  
 
+ 	button_init();
  	read_config(); 
 	pot_init();
 	led_init();
-	button_init();
+	
 	led_clear();
 	led_push();	
 	speaker_init();
@@ -205,88 +206,90 @@ int main(void)
 	led_clear();
 	led_push();
 
-	uint8_t v[] = "a";
-	uint8_t pp = 1;
 	while(1)
 	{     
-
-		if (rfm12_rx_status() == STATUS_COMPLETE)
-        {      
-
-            bufcontents = rfm12_rx_buffer();
-     		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
-            rfm12_rx_clear();
-        }
-
-        rfm12_poll();
-       	send_commands();
-		rfm12_tick();
-
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
+			rfm12_sleep();
 			power_down();
 		}
 
-		if(THEFT_ALARM == 1)
+		if(STATUS > 0)
 		{
-			if(theft_alarm_counter < 300)		
-			{		
-				
-				if(theft_alarm_light_counter < 6)
-				{
-					led_bar(6, 1, 1);
-					led_set(6, 1);
-					led_set(7,1);
-					led_set(8,1);
-					led_push();			
 
-					set_custom_speaker(90, 130);
-					set_speaker(1);
+			if(THEFT_ALARM == 1)
+			{
+				if(theft_alarm_counter < 300)		
+				{		
+					
+					if(theft_alarm_light_counter < 6)
+					{
+						led_bar(6, 1, 1);
+						led_set(6, 1);
+						led_set(7,1);
+						led_set(8,1);
+						led_push();			
+
+						set_custom_speaker(90, 130);
+						set_speaker(1);
+					}
+					else
+					{
+						led_bar(6, 2, 1);
+						led_set(6, 2);
+						led_set(7,1);
+						led_set(8,1);
+						led_push();		
+
+						set_speaker(0);		
+					}
 				}
-				else
+				else if(theft_alarm_counter == 300)
 				{
-					led_bar(6, 2, 1);
-					led_set(6, 2);
-					led_set(7,1);
-					led_set(8,1);
-					led_push();		
-
-					set_speaker(0);		
+					set_speaker(0);
+					led_clear();
+					led_push();
 				}
 			}
-			else if(theft_alarm_counter == 300)
+			else if(THEFT_ALARM == 2)
 			{
+				theft_alarm_counter = 0;
 				set_speaker(0);
 				led_clear();
 				led_push();
+				led_set(8, 0);
+				THEFT_ALARM  = 0;
 			}
-		}
-		else if(THEFT_ALARM == 2)
-		{
-			theft_alarm_counter = 0;
-			set_speaker(0);
-			led_clear();
-			led_push();
-			led_set(8, 0);
-			THEFT_ALARM  = 0;
-		}
 
-		if(STATUS == 5)
-		{
-			x[0] = adc[POT1]/150; // volume or color
-			x[1] = adc[POT2]/200; // freq or brigthness
-			x[2] = adc[POT3]/200; // sensivity
-			config_mode();
-		}
-		else
-		{
-			x[0] = adc[POT1]/200; // volume or color
-			x[1] = adc[POT2]/200; // freq or brigthness
-			x[2] = adc[POT3]/200; // sensivity
-			if(kontaktr_set_delay == 0)
-				normal_mode();
+			if(STATUS == 5)
+			{
+				x[0] = adc[POT1]/150; // volume or color
+				x[1] = adc[POT2]/200; // freq or brigthness
+				x[2] = adc[POT3]/200; // sensivity
+				config_mode();
+			}
+			else
+			{
+				x[0] = adc[POT1]/200; // volume or color
+				x[1] = adc[POT2]/200; // freq or brigthness
+				x[2] = adc[POT3]/200; // sensivity
+				if(kontaktr_set_delay == 0)
+					normal_mode();
 
+			}
+
+			if (rfm12_rx_status() == STATUS_COMPLETE)
+		    {      
+		        bufcontents = rfm12_rx_buffer();
+		   		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
+	            rfm12_rx_clear();
+		    }
+
+		    rfm12_poll();
+		    send_commands();
+			rfm12_tick();
+		
 		}
 
 	}  

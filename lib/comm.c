@@ -5,7 +5,7 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 {
 	volatile uint8_t ccmd = 0;
 	volatile uint8_t vval = 0;
-	
+
 	for(int i = 0; i < length; i++)
 	{
 		if(bufcontents[i] == 0xFF && (i + 5) < length)
@@ -41,15 +41,15 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 			{
 				case 0x0A:
 
-				ccmd = bufcontents[i+5] & 0x0F;
-				vval = bufcontents[i+5] & 0xF0;
+				vval = bufcontents[i+5] & 0x0F;
+				ccmd = bufcontents[i+5] >> 4 ;
 
 				if(ccmd > 0 && ccmd < 4 && vval > 0 && vval < 3)
 				{
 					switch(ccmd)
 					{
 						case 1:
-						if(vval == 2 && VOL < 3)
+						if(vval == 2 && VOL < 4)
 							VOL++;
 						else
 							if(vval == 1 && VOL > -1)
@@ -58,16 +58,16 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 						break;
 
 						case 2:
-						if(vval== 2 && SPK_FREQ < 6)
+						if(vval== 1 && SPK_FREQ < 5)
 							SPK_FREQ++;
-						else if(vval == 1 && SPK_FREQ > 1)
+						else if(vval == 2 && SPK_FREQ > 0)
 							SPK_FREQ--;
 						break;
 
 						case 3:
-						if(vval == 2 && SENSIVITY < 6)
+						if(vval == 1 && SENSIVITY < 6)
 							SENSIVITY++;
-						else if(vval == 1 && SENSIVITY > 1)
+						else if(vval == 2 && SENSIVITY > 0)
 							SENSIVITY--;
 						break;
 
