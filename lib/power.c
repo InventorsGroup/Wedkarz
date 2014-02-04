@@ -6,6 +6,7 @@ volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
 volatile unsigned char PREV_STATUS = 1;
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
+volatile unsigned char WAKE_RFM = 0;
 volatile unsigned char CONF_ENTER = 0;
 volatile unsigned char PAIRING = 0;
 volatile unsigned char comm_wywolanie = 0;
@@ -27,18 +28,14 @@ void power_down()
     sleep_cpu();
 }
 
-ISR(INT1_vect)
-{	
-   wake_up();
-}
-
 
 void wake_up()
 {	
-	EIMSK &= ~(1 << INT1);
+	//EIMSK &= ~(1 << INT1);
 	SMCR &= ~(1 << SE);
 
-    
+    WAKE_RFM = 1;
+
 	if(PREV_STATUS != 0 && PREV_STATUS != 5)
 		STATUS = PREV_STATUS;
 	else
