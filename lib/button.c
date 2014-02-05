@@ -34,7 +34,6 @@ volatile unsigned char branie_dir = 0;
 volatile unsigned char config_blink_counter = 0;
 volatile unsigned int theft_alarm_counter = 0;
 volatile unsigned char theft_alarm_light_counter = 0;
-volatile unsigned char kontaktr_set_delay = 0;
 volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
@@ -42,7 +41,6 @@ volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
 
 //od konaktrona
 unsigned volatile char kon1 = 0;
-unsigned volatile char kon2 = 0;
 unsigned volatile char dir = 0;
 unsigned volatile char pos2 = 0;
 
@@ -163,14 +161,6 @@ ISR(TIMER0_COMPA_vect)
 				if(silent_time > TIME * 200)
 					silent_time = 0;
 
-			}
-
-			if(kontaktr_set_delay > 0)
-			{
-				kontaktr_set_delay++;
-
-				if(kontaktr_set_delay > 10)
-					kontaktr_set_delay = 0;
 			}
 
 		if(kometa_cnter > 0)
@@ -412,38 +402,27 @@ ISR(PCINT0_vect) // CENTER_BTN
 }
 
 unsigned static volatile char sens_tab[] = {8, 15, 25, 45, 60, 80};
-
 void kontaktron_check()
 {
 
         if(STATUS == 0 || STATUS == 5 || TOP_BTN || CENTER_BTN)
                 return;
-        
+
+            
         if(!KONTAKTR_BOT && KONTAKTR_OR)
-        {
-                char dirprev = dir;
-        
-                if(kon1 == 1 && kon2 == 1)
-                        dir = 0;
-                else if(kon1 == 0 && kon2 == 0)
-                        dir = 1;        
-                        
-                if(dir != dirprev)
-                {
-                        pos2 = 0;
-                }
+        {        
+                if(kon1 == 1)
+                    dir = 1;
+                else
+                    dir = 0;           
         }
 
-        kon1 = KONTAKTR_BOT;
-        kon2 = KONTAKTR_OR;        
-        
+        if(KONTAKTR_BOT == KONTAKTR_OR)
+     	   kon1 = KONTAKTR_BOT;
 
         if(pos2 > sens_tab[SENSIVITY])
         {
-                 pos2 = 0;
-
-                kontaktr_set_delay = 1;
-
+             pos2 = 0;
 
                 if(STATUS != 3 && STATUS != 4 && kometa_cnter == 0)
                 {            
@@ -470,8 +449,9 @@ void kontaktron_check()
                 branie_counter = 0;
         }
         else
-                 pos2++;            
+                 pos2++;     
 
+        _delay_us(20);
 }
 
 

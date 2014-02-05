@@ -274,8 +274,7 @@ int main(void)
 				x[0] = adc[POT1]/200; // volume or color
 				x[1] = adc[POT2]/200; // freq or brigthness
 				x[2] = adc[POT3]/200; // sensivity
-				if(kontaktr_set_delay == 0)
-					normal_mode();
+				normal_mode();
 
 			}
 

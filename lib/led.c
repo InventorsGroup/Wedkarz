@@ -62,10 +62,17 @@ void led_enable(unsigned char s)
 		PORTD |= (1 << PD5);
 		_delay_ms(20);
 		led_power(led_pwr);
-		
-	};
-		OCR1A = 255;
 	}
+	else if(s == 0)
+ 	{
+		PORTD &= ~(1 << PD5);
+		PORTC &= ~(1 << PC0);
+		PORTB &= ~(1 << PB7);
+		CLK_PORT &= ~(1 << CLK);
+		SDI_PORT &= ~(1 << SDI);
+ 		OCR1A = 255;
+ 	}
+
 }
 
 void led_brightness_to_power()
