@@ -316,6 +316,7 @@ ISR(TIMER0_COMPA_vect)
 						_delay_ms(300);
 						led_set(6, 0);
 						led_push();
+						comm_theft = 2;
 						THEFT_ALARM = 2;
 					}
 				

@@ -196,7 +196,9 @@ void send_commands()
 		else
 			comm[5] = 0x02;
 
-		rfm12_tx(6, 0, comm);		
+
+		for(char cc = 0; cc < comm_theft; cc++)
+			rfm12_tx(6, 0, comm);		
 		comm_theft = 0;
 	}
 }
