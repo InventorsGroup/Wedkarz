@@ -24,6 +24,7 @@ void power_down()
 	EIMSK |= (1 << INT1);
 	//TCCR0B &= ~((1 << CS00) | (1 << CS02));
     ANTI_THEFT = 0;
+    PAIRING = 0;
     led_enable(0);
     sleep_cpu();
 }
