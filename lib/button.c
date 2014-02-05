@@ -259,7 +259,7 @@ ISR(TIMER0_COMPA_vect)
 				if(night_tmp < 50)
 					night_tmp++;
 			}
-			else if(night_tmp > 0 && adc[FOTO2] > 15)
+			else if(night_tmp > 0 && adc[FOTO2] > 10)
 			{
 				night_tmp--;
 			}
@@ -316,7 +316,6 @@ ISR(TIMER0_COMPA_vect)
 						_delay_ms(300);
 						led_set(6, 0);
 						led_push();
-
 						THEFT_ALARM = 2;
 					}
 				

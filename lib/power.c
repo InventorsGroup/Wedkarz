@@ -10,6 +10,7 @@ volatile unsigned char CONF_ENTER = 0;
 volatile unsigned char PAIRING = 0;
 volatile unsigned char comm_wywolanie = 0;
 volatile unsigned char comm_changed = 0;
+volatile unsigned char comm_theft = 0;
 
 void power_down()
 {	

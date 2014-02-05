@@ -182,6 +182,22 @@ void send_commands()
 		rfm12_tx(6, 0, comm);	
 		comm_wywolanie = 0;
 	}
+
+	if(comm_theft > 0)
+	{
+		comm[0] = SYG_ID[0];
+		comm[1] = SYG_ID[1];
+		comm[2] = SYG_ID[2];
+		comm[3] = SYG_ID[3];
+		comm[4] = 0x02;
+		if(comm_theft == 1)
+			comm[5] = 0x01;
+		else
+			comm[5] = 0x02;
+
+		rfm12_tx(6, 0, comm);		
+		comm_theft = 0;
+	}
 }
 
 volatile uint8_t *bufcontents;
@@ -221,7 +237,9 @@ int main(void)
 			if(THEFT_ALARM == 1)
 			{
 				if(theft_alarm_counter < 300)		
-				{		
+				{	
+					if(theft_alarm_counter == 10)
+						comm_theft = 1;	
 					
 					if(theft_alarm_light_counter < 6)
 					{
@@ -230,7 +248,6 @@ int main(void)
 						led_set(7,1);
 						led_set(8,1);
 						led_push();			
-
 						set_custom_speaker(90, 130);
 						set_speaker(1);
 					}
@@ -259,6 +276,7 @@ int main(void)
 				led_clear();
 				led_push();
 				led_set(8, 0);
+				comm_theft = 2;
 				THEFT_ALARM  = 0;
 			}
 

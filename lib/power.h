@@ -18,3 +18,4 @@ extern volatile unsigned char PAIRING;
 extern unsigned volatile char SENSIVITY;
 extern volatile unsigned char comm_wywolanie;
 extern volatile unsigned char comm_changed;
+extern volatile unsigned char comm_theft;
