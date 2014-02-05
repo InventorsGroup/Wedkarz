@@ -35,7 +35,7 @@ void read_config()
 
 void read_silent_values()
 {
-	x[0] = adc[POT1]/200; // volume or color
+	x[0] = adc[POT1]/200; // volume or color 
 	x[1] = adc[POT2]/200; // freq or brigthness
 	x[2] = adc[POT3]/200; // sensivity
 	
@@ -163,7 +163,8 @@ void send_commands()
 		comm[2] = SYG_ID[2];
 		comm[3] = SYG_ID[3];
 		comm[4] = 0x01;
-		comm[5] = comm_branie+1;
+		comm[5] = (comm_branie+1) | ((VOL+1) << 2) | (SPK_FREQ << 5);
+
 		rfm12_tx(6, 0, comm);
 		comm_branie = 2;
 	}
