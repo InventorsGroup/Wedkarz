@@ -35,7 +35,6 @@ void power_down()
     OE_PORT &= ~(1 << OE);
     SDI_PORT &= ~(1 << SDI);
 
-
     _delay_ms(10);
 
     SMCR |= (1 << SM1) | (1 << SE);

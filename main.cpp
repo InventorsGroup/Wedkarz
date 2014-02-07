@@ -216,6 +216,7 @@ int main(void)
 	led_init();
 	speaker_init();
 	rfm12_init();
+	_delay_ms(100);
 	sei();
 	read_silent_values();
 	
@@ -226,7 +227,7 @@ int main(void)
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
-			rfm12_sleep();
+		//	rfm12_sleep();
 			power_down();
 		}
 		

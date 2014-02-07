@@ -86,17 +86,17 @@ ISR(TIMER0_COMPA_vect)
 	{
 		config_blink_counter++;
 
-		if(config_blink_counter > 60)
+		if(config_blink_counter > 40)
 		{
 			config_blink_counter = 0;
-			led_set(8,1);
-			if(PAIRING > 0) led_set(7, 1);
-			led_push();
-		}
-		else if(config_blink_counter > 30)
-		{
 			led_set(8,0);
 			led_set(7, 0);
+			led_push();
+		}
+		else if(config_blink_counter > 20)
+		{
+			led_set(8,1);
+			if(PAIRING > 0) led_set(7,1);
 			led_push();
 		}
 
