@@ -1,6 +1,8 @@
 #include "../config.h"
 #include "led.h"
 #include "speaker.h"
+#include "pot.h"
+#include <avr/power.h>
 #include <avr/sleep.h>
 #include <avr/io.h> 
 #include <util/delay.h>

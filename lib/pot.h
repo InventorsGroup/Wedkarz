@@ -11,3 +11,4 @@ volatile unsigned extern int adc[8];
 SIGNAL (ADC_vect);
 
 void pot_init();
+void pot_deinit();

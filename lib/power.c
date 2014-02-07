@@ -13,17 +13,32 @@ volatile unsigned char comm_theft = 0;
 void power_down()
 {	
     cli();
+    _delay_ms(200);
+
+    led_clear();
+    TCCR0B = 0;//button timer 0
     PCICR = 0;
-	led_clear();
+
 	set_speaker(0);
 	STATUS = 0;
-    SMCR |= (1 << SM1) | (1 << SE);
 
     EICRA &= ~((1 << ISC11) | (1 << ISC10));
-	EIMSK |= (1 << INT1);
+	EIMSK |= (1 << INT1); // ustaw inta
+
     ANTI_THEFT = 0;
     PAIRING = 0;
+    
+    pot_deinit();
     led_enable(0);
+    TCCR1A = 0;
+    TCCR1B = 0;
+    OE_PORT &= ~(1 << OE);
+    SDI_PORT &= ~(1 << SDI);
+
+
+    _delay_ms(10);
+
+    SMCR |= (1 << SM1) | (1 << SE);
     sei();
     sleep_cpu();
 
@@ -37,6 +52,11 @@ void wake_up()
 {	
 	EIMSK &= ~(1 << INT1);
 	SMCR &= ~(1 << SE);
+
+    pot_init();
+    TCCR0B |= (1 << CS00) | (1 << CS02);
+    TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
+    TCCR1B |= (1 << CS11) | (1 << CS10);
 	
     _delay_ms(1000);
 

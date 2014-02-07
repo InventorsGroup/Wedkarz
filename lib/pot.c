@@ -27,3 +27,9 @@ void pot_init()
 
 }
 
+void pot_deinit()
+{
+	ADCSRA = 0;
+	DIDR0 = 0; 
+}
+

@@ -210,17 +210,13 @@ void send_commands()
 
 int main(void) 
  {  
-
  	button_init();
- 	read_config(); 
+	read_config(); 
 	pot_init();
 	led_init();
-	led_clear();
 	speaker_init();
-	rfm12_init();	
-	sei();	
-
-	_delay_ms(200);	
+	rfm12_init();
+	sei();
 	read_silent_values();
 	
 	branie_counter = 500;
@@ -230,10 +226,10 @@ int main(void)
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
-		//	rfm12_sleep();
+			rfm12_sleep();
 			power_down();
 		}
-
+		
 		if(STATUS > 0)
 		{
 

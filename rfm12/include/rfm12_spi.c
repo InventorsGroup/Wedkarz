@@ -49,6 +49,9 @@ static uint8_t spi_data(uint8_t c)
 		PORT_SCK &= ~(1<<BIT_SCK);
 		c<<=1;
 	}
+	asm("NOP");
+	asm("NOP");
+	asm("NOP");
 	return d;
 }
 #endif
