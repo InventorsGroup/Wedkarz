@@ -68,8 +68,6 @@ void led_enable(unsigned char s)
 		PORTD &= ~(1 << PD5);
 		PORTC &= ~(1 << PC0);
 		PORTB &= ~(1 << PB7);
-		CLK_PORT &= ~(1 << CLK);
-		SDI_PORT &= ~(1 << SDI);
  		OCR1A = 255;
  	}
 
@@ -164,7 +162,8 @@ void led_set(unsigned char n, unsigned char color)
 void led_push()
 {
 
-	for (int i = 0; i<36; i++){
+	for (unsigned char i = 0; i<36; i++)
+	{
 		
 		if (leds[i] == 1) SDI_PORT |= (1 << SDI);
 		else SDI_PORT &= ~(1<<SDI);
@@ -182,30 +181,23 @@ void led_push()
 
 void led_clear()
 {
-	for (int i=0; i<36; i++) leds[i] = 0;
+	for (char i=0; i<36; i++) leds[i] = 0;
 	led_push();
 }
 
 void led_bar_clear()
 {
-	for (int i = 0; i < 6; i++) led_set(i, 0);
+	for (char i = 0; i < 6; i++) led_set(i, 0);
 	led_push();
 }
 
 void led_bar(unsigned char n, unsigned char c, unsigned char dir)
 {
-	led_bar2(n, c, dir, 0);
-}
-
-void led_bar2(unsigned char n, unsigned char c, unsigned char dir, unsigned char comet)
-{
-	volatile int i = 0;
 	led_bar_clear();
 	if (n < 0) n = 0;
 	else if (n > 6) n = 6;
-	for(i = 0; i < n; i++)
+	for(unsigned char i = 0; i < n; i++)
 	{	
-	if(comet  == 0 || (comet > 0 && ((n > 4 && (n-4) < i) || n <=4)))
 		if (dir > 0) led_set(5-i, c);
 		else led_set(i, c);
 	}

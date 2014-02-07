@@ -62,5 +62,3 @@ c - color
 dir - direction
 */
 void led_bar(unsigned char n, unsigned char c, unsigned char dir);
-
-void led_bar2(unsigned char n, unsigned char c, unsigned char dir, unsigned char comet);

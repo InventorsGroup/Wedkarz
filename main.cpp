@@ -11,6 +11,11 @@
 #include "lib/rfm12.h"
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
+volatile uint8_t *bufcontents;
+ISR(INT1_vect)
+{	
+
+}
 
 void read_config()
 {
@@ -163,8 +168,7 @@ void send_commands()
 		comm[2] = SYG_ID[2];
 		comm[3] = SYG_ID[3];
 		comm[4] = 0x01;
-		comm[5] = (comm_branie+1) | ((VOL+1) << 2) | (SPK_FREQ << 5);
-
+		comm[5] = (comm_branie+1) | (SPK_FREQ << 2);
 		rfm12_tx(6, 0, comm);
 		comm_branie = 2;
 	}
@@ -203,7 +207,7 @@ void send_commands()
 	}
 }
 
-volatile uint8_t *bufcontents;
+
 int main(void) 
  {  
 
@@ -211,20 +215,16 @@ int main(void)
  	read_config(); 
 	pot_init();
 	led_init();
-	
 	led_clear();
-	led_push();	
 	speaker_init();
-	rfm12_init();
-	
+	rfm12_init();	
 	sei();	
+
 	_delay_ms(200);	
 	read_silent_values();
 	
 	branie_counter = 500;
-	led_clear();
-	led_push();
-
+	
 	while(1)
 	{     
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
@@ -301,10 +301,10 @@ int main(void)
 
 			if (rfm12_rx_status() == STATUS_COMPLETE)
 			{
-		        bufcontents = rfm12_rx_buffer();
-		   		parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
-	            rfm12_rx_clear();
-		    }
+			    bufcontents = rfm12_rx_buffer();
+				parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
+		        rfm12_rx_clear();
+			}
 
 		    rfm12_poll();
 		    send_commands();

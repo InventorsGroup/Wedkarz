@@ -30,10 +30,7 @@ void power_down()
     wake_up();
 }
 
-ISR(INT1_vect)
-{	
-   
-}
+
 
 
 void wake_up()

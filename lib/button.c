@@ -234,14 +234,12 @@ ISR(TIMER0_COMPA_vect)
 			}			
 			if(branie_counter == 400)
 			{
-				led_set(7, 0);
-				led_set(6, 0);
-				led_push();			
-		
+				led_turn_off = 0;
+				led_clear();
 			}
-		}
-	
-		if(ANTI_THEFT == 0 && led_turn_off > 0)
+
+
+		}else if(ANTI_THEFT == 0 && led_turn_off > 0)
 		{
 			led_turn_off++;
 
