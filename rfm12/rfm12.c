@@ -692,6 +692,6 @@ void rfm12_sleep(void)
 }
 void rfm12_wakeup(void)
 {
-	
+	rfm12_data(0x820D);
 }
 
