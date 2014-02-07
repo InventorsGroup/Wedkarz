@@ -46,6 +46,9 @@ unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
+	if(STATUS == 0)
+		return;
+
 	if(ANTI_THEFT > 0 || TIME > 1)
 	{
 		led_set(9, 1); //led IR
@@ -78,9 +81,6 @@ ISR(TIMER0_COMPA_vect)
 			theft_alarm_light_counter = 0;
 
 	}
-
-	if(CONF_ENTER== 1)
-		return;
 
 	if(STATUS == 5)
 	{
@@ -384,20 +384,11 @@ ISR(TIMER0_COMPA_vect)
 
 ISR(PCINT0_vect) // CENTER_BTN
 {
-	_delay_ms(10);
-	
+
 	if(CENTER_BTN && center_btn_counter == 0)
 	{
-		if(CONF_ENTER == 0)
-		{
-			center_btn_counter = 1;
-
-		}
-		else
-		{
-			CONF_ENTER = 0;
-		}
-
+		_delay_ms(10);
+		center_btn_counter = 1;
 	}
 }
 

@@ -119,7 +119,7 @@ void config_mode()
 		adc_diff = adc[POT1]- x_prev2[0];
 		if(adc_diff<0)adc_diff*=-1;
 		
-		if ((x[0] != x_prev[0] && adc_diff > 50) || CONF_ENTER) 
+		if (x[0] != x_prev[0] && adc_diff > 50) 
 		{		
 			COLOR = x[0]+1;
 			led_bar(6, COLOR, 1);
