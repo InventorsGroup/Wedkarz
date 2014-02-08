@@ -1,7 +1,6 @@
 #include <avr/io.h> 
 #include <avr/interrupt.h>
 #include <util/delay.h>
-
 #include "config.h"
 #include "lib/led.h"
 #include "lib/pot.h"
@@ -14,8 +13,8 @@ volatile unsigned int x_prev[3], x[3], x_prev2[3];
 volatile uint8_t *bufcontents;
 ISR(INT1_vect)
 {	
-	if(!CENTER_BTN && !TOP_BTN && STATUS >0)
-		rfm12_wakeup();
+//	if(!CENTER_BTN && !TOP_BTN && STATUS >0)
+	//	rfm12_power_up();
 }
 
 void read_config()
@@ -227,7 +226,7 @@ int main(void)
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
-			rfm12_sleep();
+			rfm12_power_down();
 			power_down();
 		}
 
