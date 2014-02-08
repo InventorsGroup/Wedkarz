@@ -1,6 +1,6 @@
 #include "comm.h"
 
-uint8_t SYG_ID[] = {0xFF, 0, 0, 0};
+uint8_t SYG_ID[] = {0xFF, 0xFE, 0xFE, 0xFE};
 void parse_buffer(uint8_t *bufcontents, uint8_t length)
 {
 	volatile uint8_t ccmd = 0;
@@ -102,8 +102,4 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 			return;
 		}
 	}
-}
-void send_packet(uint8_t id, uint8_t param)
-{
-
 }

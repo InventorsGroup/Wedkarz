@@ -14,7 +14,8 @@ volatile unsigned int x_prev[3], x[3], x_prev2[3];
 volatile uint8_t *bufcontents;
 ISR(INT1_vect)
 {	
-
+	if(!CENTER_BTN && !TOP_BTN && STATUS >0)
+		rfm12_wakeup();
 }
 
 void read_config()
@@ -219,7 +220,6 @@ int main(void)
 	_delay_ms(100);
 	sei();
 	read_silent_values();
-	
 	branie_counter = 500;
 
 	while(1)
@@ -227,10 +227,10 @@ int main(void)
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
-		//	rfm12_sleep();
+			rfm12_sleep();
 			power_down();
 		}
-		
+
 		if(STATUS > 0)
 		{
 
@@ -306,7 +306,6 @@ int main(void)
 		    rfm12_poll();
 		    send_commands();
 			rfm12_tick();
-		
 		}
 
 	}  

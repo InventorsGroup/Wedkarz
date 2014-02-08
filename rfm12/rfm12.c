@@ -675,23 +675,31 @@ void rfm12_init(void)
 	RFM12_INT_ON();	
 }
 
+volatile char sleeped = 0;
 void rfm12_sleep(void)
 {
 
-	rfm12_data(0xE000 | 0x0500);
+	rfm12_data(0xE000 | 0x0500 | 0);
 	rfm12_data(0x8205);
+	sleeped = 1;
 
-	// rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC);
-	// rfm12_data(RFM12_CMD_TX | 0xaa);
-	// uint8_t status = rfm12_read(RFM12_CMD_STATUS);
+	/*rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC);
+	rfm12_data(RFM12_CMD_TX | 0xaa);
+	uint8_t status = rfm12_read(RFM12_CMD_STATUS);
 
-	// rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC);
-	// rfm12_data(RFM12_CMD_WAKEUP | (0xff & 0x1fff));
-	// rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC | RFM12_PWRMGT_EW);
-
+	rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC);
+	rfm12_data(RFM12_CMD_WAKEUP | (0xff & 0x1fff));
+	rfm12_data(RFM12_CMD_PWRMGT | RFM12_PWRMGT_DC | RFM12_PWRMGT_EW);
+*/
 }
 void rfm12_wakeup(void)
 {
-	rfm12_data(0x820D);
+	if(sleeped == 0)
+		return;
+	
+//	rfm12_data(0x820D);
+	rfm12_init();
+	_delay_ms(40);
+	sleeped = 0;
 }
 

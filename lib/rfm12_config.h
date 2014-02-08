@@ -124,6 +124,7 @@ This is a bitmask that defines how "rude" this library behaves
 #define RFM12_NORETURNS 0
 #define RFM12_USE_WAKEUP_TIMER 0
 #define RFM12_TRANSMIT_ONLY 0
+#define RFM12_NOCOLLISIONDETECTION 1
 
 /* Disable interrupt vector and run purely inline. This may be useful for
  * configurations where a hardware interrupt is not available.
