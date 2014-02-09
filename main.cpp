@@ -11,23 +11,9 @@
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
 volatile uint8_t *bufcontents;
-volatile char poi = 0;
+
 ISR(INT1_vect)
 {	
-	if(!CENTER_BTN && !TOP_BTN && STATUS > 0)
-	{
-
-					
-	if(poi == 0)
-		led_set(3,5);
-	else
-		led_set(3,0);
-		
-		
-		led_push();
-		
-		poi = poi == 0 ? 1 : 0;
-	}
 }
 
 void read_config()
@@ -185,11 +171,6 @@ void uart_init()
 	DDRD |= (1 << PD1);
 }
 
-void uart_put( unsigned char data )
-{
-	while(!( UCSR0A & (1<<UDRE0)));
-	UDR0 = data;		        
-}
 
 
 int main(void) 
@@ -208,7 +189,7 @@ int main(void)
 	read_silent_values();
 	branie_counter = 500;
 	
-
+	//rfm12_set_wakeup_timer(0x804);
 
 	while(1)
 	{     
@@ -285,7 +266,7 @@ int main(void)
 			if (rfm12_rx_status() == STATUS_COMPLETE)
 			{
 			    bufcontents = rfm12_rx_buffer();
-				uart_put(bufcontents[0]);
+			//	uart_put(bufcontents[0]);
 				parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
 		        rfm12_rx_clear();
 			}

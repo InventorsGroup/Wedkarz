@@ -126,9 +126,15 @@ rfm12_control_t ctrl;
 * \see rfm12_control_t, rf_rx_buffer_t and rf_tx_buffer_t
 */
 //if polling is used, do not define an interrupt handler, but a polling function
+void uart_put( unsigned char data )
+{
+	while(!( UCSR0A & (1<<UDRE0)));
+	UDR0 = data;		        
+}
+
 
 #if (RFM12_USE_POLLING)
-void rfm12_poll(void)
+uint8_t rfm12_poll(void)
 #else
 ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 #endif
@@ -148,6 +154,7 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 		//first we read the first byte of the status register
 		//to get the interrupt flags
 		status = rfm12_read_int_flags_inline();
+		uart_put(status);
 		//if we use at least one of the status bits, we need to check the status again
 		//for the case in which another interrupt condition occured while we were handeling
 		//the first one.
@@ -380,6 +387,8 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 
 	//turn the int back on
 	RFM12_INT_ON();
+	
+	return status;
 }
 
 
