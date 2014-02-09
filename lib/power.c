@@ -1,5 +1,5 @@
 #include "power.h"
-
+#include "rfm12.h"
 
 unsigned volatile char SENSIVITY = 1;
 volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
@@ -51,12 +51,8 @@ void wake_up()
 {	
 	EIMSK &= ~(1 << INT1);
 	SMCR &= ~(1 << SE);
-
-    pot_init();
-    TCCR0B |= (1 << CS00) | (1 << CS02);
-    TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
-    TCCR1B |= (1 << CS11) | (1 << CS10);
 	
+   
     _delay_ms(1000);
 
     STATUS = 1;
@@ -64,8 +60,16 @@ void wake_up()
     if(!TOP_BTN)
     {
         GO_TO_POWER_DOWN = 1;
+		return;
     }
-    else
+
+	pot_init();
+    TCCR0B |= (1 << CS00) | (1 << CS02);
+    TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
+    TCCR1B |= (1 << CS11) | (1 << CS10);
+	
+	
+	
     if(CENTER_BTN)
     {
     	STATUS = 5;
@@ -94,4 +98,7 @@ void wake_up()
     while(TOP_BTN || CENTER_BTN);
 
     PCICR |= (1 << PCIE1) | (1 << PCIE0) | (1 << PCIE2);
+	
+	EICRA |= (1 << ISC11);
+	EIMSK |= (1 << INT1);
 }

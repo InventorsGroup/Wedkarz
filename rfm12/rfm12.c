@@ -126,6 +126,7 @@ rfm12_control_t ctrl;
 * \see rfm12_control_t, rf_rx_buffer_t and rf_tx_buffer_t
 */
 //if polling is used, do not define an interrupt handler, but a polling function
+
 #if (RFM12_USE_POLLING)
 void rfm12_poll(void)
 #else
@@ -142,12 +143,11 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 
 	do {
 		//clear AVR int flag
-		RFM12_INT_FLAG = (1<<RFM12_FLAG_BIT);
+		RFM12_INT_FLAG |= (1<<RFM12_FLAG_BIT);
 
 		//first we read the first byte of the status register
 		//to get the interrupt flags
 		status = rfm12_read_int_flags_inline();
-
 		//if we use at least one of the status bits, we need to check the status again
 		//for the case in which another interrupt condition occured while we were handeling
 		//the first one.
@@ -157,6 +157,8 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 			uart_putc('S');
 			uart_putc(status);
 		#endif
+		
+
 
 		//low battery detector feature
 		#if RFM12_LOW_BATT_DETECTOR
@@ -778,7 +780,7 @@ void rfm12_init(void) {
 
 	//clear int flag
 	rfm12_read(RFM12_CMD_STATUS);
-	RFM12_INT_FLAG = (1<<RFM12_FLAG_BIT);
+	RFM12_INT_FLAG |= (1<<RFM12_FLAG_BIT);
 
 	//init receiver fifo, we now begin receiving.
 	rfm12_data(CLEAR_FIFO);

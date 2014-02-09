@@ -11,10 +11,23 @@
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
 volatile uint8_t *bufcontents;
+volatile char poi = 0;
 ISR(INT1_vect)
 {	
-//	if(!CENTER_BTN && !TOP_BTN && STATUS >0)
-	//	rfm12_power_up();
+	if(!CENTER_BTN && !TOP_BTN && STATUS > 0)
+	{
+
+					
+	if(poi == 0)
+		led_set(3,5);
+	else
+		led_set(3,0);
+		
+		
+		led_push();
+		
+		poi = poi == 0 ? 1 : 0;
+	}
 }
 
 void read_config()
@@ -207,6 +220,26 @@ void send_commands()
 	}
 }
 
+#define F_OSC 8000000
+#define USART_BAUDRATE 9600
+#define BAUD_PRESCALE (((F_OSC / (USART_BAUDRATE * 16UL))) - 1) 
+void uart_init()
+{
+	UBRR0H = (unsigned char)(BAUD_PRESCALE>>8);
+	UBRR0L = (unsigned char)BAUD_PRESCALE;
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);
+	UCSR0C = (3<<UCSZ00);	
+	
+	DDRD &= ~(1 << PD0);
+	DDRD |= (1 << PD1);
+}
+
+void uart_put( unsigned char data )
+{
+	while(!( UCSR0A & (1<<UDRE0)));
+	UDR0 = data;		        
+}
+
 
 int main(void) 
  {  
@@ -216,10 +249,14 @@ int main(void)
 	led_init();
 	speaker_init();
 	rfm12_init();
+	uart_init();
+
 	_delay_ms(100);
 	sei();
 	read_silent_values();
 	branie_counter = 500;
+	
+	rfm12_set_wakeup_timer(0x1FFF);
 
 	while(1)
 	{     
@@ -228,6 +265,10 @@ int main(void)
 			GO_TO_POWER_DOWN = 0;
 			rfm12_power_down();
 			power_down();
+		}
+		else
+		{
+			rfm12_power_up();
 		}
 
 		if(STATUS > 0)
@@ -298,11 +339,12 @@ int main(void)
 			if (rfm12_rx_status() == STATUS_COMPLETE)
 			{
 			    bufcontents = rfm12_rx_buffer();
+				uart_put(bufcontents[0]);
 				parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
 		        rfm12_rx_clear();
 			}
-
-		    rfm12_poll();
+			
+			rfm12_poll();
 		    send_commands();
 			rfm12_tick();
 		}

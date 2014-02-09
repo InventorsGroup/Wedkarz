@@ -264,9 +264,16 @@
 		//before turning of the receiver.
 		//reason: this way transmissions that have been triggered before
 		//can be completed before we power down the rfm12.
-
-		while (ctrl.rfm12_state != STATE_RX_IDLE);
-
+		
+		if(ctrl.rfm12_state == STATE_POWER_DOWN)
+			return;
+		
+		while (ctrl.rfm12_state != STATE_RX_IDLE)
+		{
+			rfm12_poll();
+			rfm12_tick();
+		}
+		
 		//disable the interrupt (as we're working directly with the transceiver now)
 		//we won't loose interrupts, as the AVR caches them in the int flag
 		RFM12_INT_OFF();
@@ -287,6 +294,10 @@
 	void rfm12_power_up() {
 		//disable the interrupt (as we're working directly with the transceiver now)
 		//we won't loose interrupts, as the AVR caches them in the int flag
+		
+		if(ctrl.rfm12_state != STATE_POWER_DOWN)
+			return;
+		
 		RFM12_INT_OFF();
 
 		ctrl.rfm12_state = STATE_RX_IDLE;

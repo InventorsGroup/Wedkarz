@@ -13,6 +13,7 @@ extern volatile unsigned char theft_alarm_light_counter;
 extern volatile unsigned char kontaktr_set_delay;
 extern volatile unsigned int branie_counter;
 extern volatile unsigned char comm_branie;
+extern volatile unsigned char comm_tick;
 void button_init();
 ISR(TIMER0_COMPA_vect);
 ISR(INT1_vect);

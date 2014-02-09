@@ -37,7 +37,7 @@ volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
-
+volatile unsigned char comm_tick = 0;
 
 //od konaktrona
 unsigned volatile char kon1 = 0;
@@ -46,6 +46,8 @@ unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
+	comm_tick = 1;
+	
 	if(STATUS == 0)
 		return;
 
@@ -82,7 +84,7 @@ ISR(TIMER0_COMPA_vect)
 
 	}
 
-	if(STATUS == 5)
+	/*if(STATUS == 5)
 	{
 		config_blink_counter++;
 
@@ -152,7 +154,7 @@ ISR(TIMER0_COMPA_vect)
 		}
 
 	} 
-	else if(STATUS != 0)
+	else*/if(STATUS != 0)
 	{
 			if(TIME > 1 && silent_time > 0)
 			{
@@ -222,13 +224,13 @@ ISR(TIMER0_COMPA_vect)
 					if(branie_counter % 2 == 0)
 					{
 						led_set(6, COLOR);
-						led_push();
 					}
 					else
 					{
 						led_set(6, 0);
-						led_push();
 					}
+					
+					led_push();
 					branie_counter2 = 0;
 				}
 			}			
@@ -265,15 +267,12 @@ ISR(TIMER0_COMPA_vect)
 			if(night_tmp > 30)
 			{
 				led_set(8, 1);
-				led_push();
 			}
 			else if(night_tmp == 0)
 			{	
 				led_set(8, 0);
-				led_push();
 			}
-
-
+			led_push();
 		}
 
 		if(ANTI_THEFT > 0 && adc[FOTO1] < 400)
@@ -355,13 +354,13 @@ ISR(TIMER0_COMPA_vect)
 
 		if(top_btn_counter > 30)
 		{			
-			for(int i = 0; i < 6; i++)
+			for(char i = 0; i < 6; i++)
 			{
 				led_bar(i+1, COLOR, 0);
 				_delay_ms(50);
 			}
 
-			for(int i = 6; i > 0; i--)
+			for(char i = 6; i > 0; i--)
 			{
 				led_bar(i, COLOR, 0);
 				_delay_ms(50);
@@ -382,10 +381,8 @@ ISR(TIMER0_COMPA_vect)
 
 ISR(PCINT0_vect) // CENTER_BTN
 {
-
 	if(CENTER_BTN && center_btn_counter == 0)
 	{
-		_delay_ms(10);
 		center_btn_counter = 1;
 	}
 }
@@ -400,10 +397,7 @@ void kontaktron_check()
             
         if(!KONTAKTR_BOT && KONTAKTR_OR)
         {        
-                if(kon1 == 1)
-                    dir = 1;
-                else
-                    dir = 0;           
+             dir = kon1;        
         }
 
         if(KONTAKTR_BOT == KONTAKTR_OR)
@@ -454,7 +448,6 @@ ISR(PCINT2_vect) // TOP_BTN
 	
 	if(TOP_BTN && top_btn_counter == 0 && center_btn_counter == 0)
 	{
-		_delay_ms(10);
 		top_btn_counter = 1;
 	}
 	else
