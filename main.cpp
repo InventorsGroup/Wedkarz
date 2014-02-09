@@ -200,6 +200,7 @@ int main(void)
 	led_init();
 	speaker_init();
 	rfm12_init();
+	rfm12_set_wakeup_timer(0x1FFF);
 	uart_init();
 
 	_delay_ms(100);
@@ -207,7 +208,7 @@ int main(void)
 	read_silent_values();
 	branie_counter = 500;
 	
-	rfm12_set_wakeup_timer(0x1FFF);
+
 
 	while(1)
 	{     
