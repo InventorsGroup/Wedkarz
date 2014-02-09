@@ -6,9 +6,8 @@ volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
 volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char PAIRING = 0;
-volatile unsigned char comm_wywolanie = 0;
 volatile unsigned char comm_changed = 0;
-volatile unsigned char comm_theft = 0;
+
 
 void power_down()
 {	
@@ -68,7 +67,7 @@ void wake_up()
     TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
     TCCR1B |= (1 << CS11) | (1 << CS10);
 	
-	
+	rfm12_power_up();
 	
     if(CENTER_BTN)
     {

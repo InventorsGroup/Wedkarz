@@ -143,7 +143,7 @@ void config_mode()
 			led_bar(6, COLOR, 1);
 			x_prev[0] = x[0];	
 			x_prev2[0] = adc[POT1];	
-			comm_wywolanie = 1;		
+			send_command(0x03, COLOR);	
 		}
 
 		adc_diff = adc[POT2]- x_prev2[1];
@@ -169,55 +169,6 @@ void config_mode()
 			x_prev2[2] = adc[POT3];			
 		}
 		
-}
-
-void send_commands()
-{
-	uint8_t comm[6];
-	if(comm_branie == 1 || comm_branie == 0)
-	{
-		comm[0] = SYG_ID[0];
-		comm[1] = SYG_ID[1];
-		comm[2] = SYG_ID[2];
-		comm[3] = SYG_ID[3];
-		comm[4] = 0x01;
-		comm[5] = (comm_branie+1) | (SPK_FREQ << 2);
-		rfm12_tx(6, 0, comm);
-		comm_branie = 2;
-	}
-
-	if(comm_wywolanie > 0)
-	{
-		comm[0] = SYG_ID[0];
-		comm[1] = SYG_ID[1];
-		comm[2] = SYG_ID[2];
-		comm[3] = SYG_ID[3];
-		if(comm_wywolanie == 2)
-			comm[4] = 0x04;
-		else
-			comm[4] = 0x03;
-		comm[5] = COLOR;
-		rfm12_tx(6, 0, comm);	
-		comm_wywolanie = 0;
-	}
-
-	if(comm_theft > 0)
-	{
-		comm[0] = SYG_ID[0];
-		comm[1] = SYG_ID[1];
-		comm[2] = SYG_ID[2];
-		comm[3] = SYG_ID[3];
-		comm[4] = 0x02;
-		if(comm_theft == 1)
-			comm[5] = 0x01;
-		else
-			comm[5] = 0x02;
-
-
-		for(char cc = 0; cc < comm_theft; cc++)
-			rfm12_tx(6, 0, comm);		
-		comm_theft = 0;
-	}
 }
 
 #define F_OSC 8000000
@@ -266,17 +217,14 @@ int main(void)
 			rfm12_power_down();
 			power_down();
 		}
-
-
-		if(STATUS > 0)
+		else
 		{
-
 			if(THEFT_ALARM == 1)
 			{
 				if(theft_alarm_counter < 300)		
 				{	
 					if(theft_alarm_counter == 10)
-						comm_theft = 1;	
+						send_command(0x02, 0x01);
 					
 					if(theft_alarm_light_counter < 6)
 					{
@@ -313,7 +261,7 @@ int main(void)
 				led_clear();
 				led_push();
 				led_set(8, 0);
-				comm_theft = 2;
+				send_command(0x02, 0x02);
 				THEFT_ALARM  = 0;
 			}
 
@@ -342,12 +290,6 @@ int main(void)
 			}
 			
 			rfm12_poll();
-		    send_commands();
-			if(comm_tick == 1)
-			{
-				comm_tick = 0;
-				rfm12_tick();
-			}
 		}
 
 	}  

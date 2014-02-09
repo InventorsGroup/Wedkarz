@@ -1,6 +1,5 @@
 #include "button.h"
 
-
 void button_init()
 {
 	DDRB &= ~(1 << PB0);
@@ -24,7 +23,6 @@ void button_init()
 	OCR0A = 255;
 }
 
-volatile unsigned char comm_branie = 2;
 volatile unsigned char center_btn_counter = 0;
 volatile unsigned char top_btn_counter = 0;
 volatile unsigned char spk_tmp = 0;
@@ -37,7 +35,6 @@ volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
-volatile unsigned char comm_tick = 0;
 
 //od konaktrona
 unsigned volatile char kon1 = 0;
@@ -46,7 +43,7 @@ unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
 {
-	comm_tick = 1;
+	rfm12_tick();
 	
 	if(STATUS == 0)
 		return;
@@ -313,7 +310,7 @@ ISR(TIMER0_COMPA_vect)
 						_delay_ms(300);
 						led_set(6, 0);
 						led_push();
-						comm_theft = 2;
+						send_command(0x02, 0x02);
 						THEFT_ALARM = 2;
 					}
 				
@@ -411,14 +408,14 @@ void kontaktron_check()
                 {            
                 	branie_dir = dir;     
             		kometa_cnter = 1;
-            		comm_branie = dir;
             	}
             	else
             	if(STATUS == 3 || STATUS == 4)
             	{
             		branie_dir = dir;
-            		comm_branie = dir;
             	}
+				
+				send_command(0x01, (branie_dir+1) | (SPK_FREQ << 2));
 
 
                 if(branie_dir > 0)

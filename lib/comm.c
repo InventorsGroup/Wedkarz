@@ -27,7 +27,7 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				_delay_ms(100);
 				led_set(6, 0);
 				led_push();
-				comm_wywolanie = 2;
+				send_command(0x04, COLOR);
 				PAIRING = 0;
 				return;
 			}
@@ -94,7 +94,7 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				break;
 
 				case 0x0D:
-					comm_wywolanie = 1;
+					send_command(0x03, COLOR);
 				break;
 			}
 
@@ -102,4 +102,16 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 			return;
 		}
 	}
+}
+
+void send_command(uint8_t cmd, uint8_t param)
+{
+	uint8_t comm[6];
+	comm[0] = SYG_ID[0];
+	comm[1] = SYG_ID[1];
+	comm[2] = SYG_ID[2];
+	comm[3] = SYG_ID[3];
+	comm[4] = cmd;
+	comm[5] = param;
+	rfm12_tx(6, 0, comm);
 }
