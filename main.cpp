@@ -266,10 +266,7 @@ int main(void)
 			rfm12_power_down();
 			power_down();
 		}
-		else
-		{
-			rfm12_power_up();
-		}
+
 
 		if(STATUS > 0)
 		{
@@ -346,7 +343,11 @@ int main(void)
 			
 			rfm12_poll();
 		    send_commands();
-			rfm12_tick();
+			if(comm_tick == 1)
+			{
+				comm_tick = 0;
+				rfm12_tick();
+			}
 		}
 
 	}  
