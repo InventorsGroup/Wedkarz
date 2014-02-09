@@ -254,11 +254,13 @@
  * rfm12 power up / power down
 */
 
+
 #if RFM12_USE_POWER_CONTROL
 	//! This function powers down the rfm12 modules receiver to save power.
 	/**
 	 * It can not receive in that state.
 	 */
+	uint8_t trans[] = {0};
 	void rfm12_power_down() {
 		//wait for rfm12 to get to state STATE_RX_IDLE
 		//before turning of the receiver.
@@ -273,11 +275,11 @@
 			rfm12_poll();
 			rfm12_tick();
 		}
-		
+
 		//disable the interrupt (as we're working directly with the transceiver now)
 		//we won't loose interrupts, as the AVR caches them in the int flag
 		RFM12_INT_OFF();
-
+		
 		//disable receiver
 		ctrl.pwrmgt_shadow &= ~RFM12_PWRMGT_ER;
 		rfm12_data(ctrl.pwrmgt_shadow);

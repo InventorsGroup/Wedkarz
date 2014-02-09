@@ -126,8 +126,9 @@ rfm12_control_t ctrl;
 * \see rfm12_control_t, rf_rx_buffer_t and rf_tx_buffer_t
 */
 //if polling is used, do not define an interrupt handler, but a polling function
+
 #if (RFM12_USE_POLLING)
-uint8_t rfm12_poll(void)
+void rfm12_poll(void)
 #else
 ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 #endif
@@ -379,8 +380,7 @@ ISR(RFM12_INT_VECT, ISR_NOBLOCK)
 
 	//turn the int back on
 	RFM12_INT_ON();
-	
-	return status;
+
 }
 
 

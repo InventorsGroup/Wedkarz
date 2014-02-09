@@ -160,7 +160,6 @@ void config_mode()
 		
 }
 
-
 int main(void) 
  {  
  	button_init();
@@ -179,7 +178,7 @@ int main(void)
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
 		{
 			GO_TO_POWER_DOWN = 0;
-			rfm12_power_down();
+			rfm12_power_down();					
 			power_down();
 		}
 		else
