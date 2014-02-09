@@ -10,6 +10,13 @@
 		   ...
 */
 
+unsigned volatile char SENSIVITY = 1;
+volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
+volatile unsigned char ANTI_THEFT = 0;
+volatile unsigned char GO_TO_POWER_DOWN = 1;
+volatile unsigned char PAIRING = 0;
+volatile unsigned char comm_changed = 0;
+
 unsigned volatile char COLOR = 1;
 unsigned volatile char BRIGHTNESS = 6;
 	

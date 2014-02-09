@@ -1,12 +1,4 @@
 #include "power.h"
-#include "rfm12.h"
-
-unsigned volatile char SENSIVITY = 1;
-volatile unsigned char STATUS = 1; //0 - OFF, 1 -4 - NORMAL, 5 - CONFIG
-volatile unsigned char ANTI_THEFT = 0;
-volatile unsigned char GO_TO_POWER_DOWN = 1;
-volatile unsigned char PAIRING = 0;
-volatile unsigned char comm_changed = 0;
 
 
 void power_down()
@@ -41,6 +33,35 @@ void power_down()
     sleep_cpu();
 
     wake_up();
+}
+
+volatile char sleeped = 0;
+void sleep()
+{
+	if(ANTI_THEFT == 0 && STATUS != 2 && STATUS != 4)
+		TCCR0B = 0;//button timer 0
+		
+	TCCR1A = 0;
+    TCCR1B = 0;
+	led_enable(0);
+	sleeped = 1;
+}
+
+volatile unsigned char anti_theft_delay_cnter = 0;
+void wake_up_after_sleep()
+{
+
+	if(ANTI_THEFT > 0 && anti_theft_delay_cnter > 5)
+		send_command(0x02, 0x01);
+
+	if(sleeped == 0)
+	return;
+	
+	led_turn_off = 1;
+	TCCR0B |= (1 << CS00) | (1 << CS02);
+    TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
+    TCCR1B |= (1 << CS11) | (1 << CS10);
+	sleeped = 0;
 }
 
 void wake_up()
@@ -94,7 +115,4 @@ void wake_up()
     while(TOP_BTN || CENTER_BTN);
 
     PCICR |= (1 << PCIE1) | (1 << PCIE0) | (1 << PCIE2);
-	
-	EICRA |= (1 << ISC11);
-	EIMSK |= (1 << INT1);
 }

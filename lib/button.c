@@ -42,11 +42,7 @@ unsigned volatile char dir = 0;
 unsigned volatile char pos2 = 0;
 
 ISR(TIMER0_COMPA_vect)
-{
-	rfm12_tick();
-	
-	if(STATUS == 0)
-		return;
+{	
 
 	if(ANTI_THEFT > 0 || TIME > 1)
 	{
@@ -68,6 +64,9 @@ ISR(TIMER0_COMPA_vect)
 			spk_cnt = 0;
 		}
 	}
+	
+	if(ANTI_THEFT > 0 && anti_theft_delay_cnter < 6)
+		anti_theft_delay_cnter++;
 
 	if(THEFT_ALARM == 1)
 	{
@@ -81,7 +80,7 @@ ISR(TIMER0_COMPA_vect)
 
 	}
 
-	/*if(STATUS == 5)
+	if(STATUS == 5)
 	{
 		config_blink_counter++;
 
@@ -151,7 +150,7 @@ ISR(TIMER0_COMPA_vect)
 		}
 
 	} 
-	else*/if(STATUS != 0)
+	else if(STATUS != 0)
 	{
 			if(TIME > 1 && silent_time > 0)
 			{
@@ -235,10 +234,11 @@ ISR(TIMER0_COMPA_vect)
 			{
 				led_turn_off = 0;
 				led_clear();
+				sleep();
 			}
 
 
-		}else if(ANTI_THEFT == 0 && led_turn_off > 0)
+		}else if(THEFT_ALARM == 0 && led_turn_off > 0)
 		{
 			led_turn_off++;
 
@@ -246,6 +246,7 @@ ISR(TIMER0_COMPA_vect)
 			{
 				led_turn_off = 0;
 				led_clear();
+				sleep();
 			}
 		}
 
@@ -293,6 +294,7 @@ ISR(TIMER0_COMPA_vect)
 
 					if(ANTI_THEFT > 0)
 					{
+						anti_theft_delay_cnter = 0;
 						led_set(6, 1);
 						led_push();
 						_delay_ms(300);
@@ -382,6 +384,8 @@ ISR(PCINT0_vect) // CENTER_BTN
 	{
 		center_btn_counter = 1;
 	}
+	
+	wake_up_after_sleep();
 }
 
 unsigned static volatile char sens_tab[] = {8, 15, 25, 45, 60, 80};
@@ -438,11 +442,11 @@ void kontaktron_check()
 ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 {
 	kontaktron_check();	
+	wake_up_after_sleep();
 }
 
 ISR(PCINT2_vect) // TOP_BTN
 {	
-	
 	if(TOP_BTN && top_btn_counter == 0 && center_btn_counter == 0)
 	{
 		top_btn_counter = 1;
@@ -451,5 +455,7 @@ ISR(PCINT2_vect) // TOP_BTN
 	{
 		kontaktron_check();
 	}
+		
+	wake_up_after_sleep();
 }
 

@@ -1,7 +1,6 @@
 #include <avr/io.h> 
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "power.h"
 #include "led.h"
 #include "speaker.h"
 #include "rfm12.h"

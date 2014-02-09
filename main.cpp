@@ -61,6 +61,7 @@ volatile int adc_diff = 0;
 		
 		if ((x[0] != x_prev[0] && adc_diff > 50) || comm_changed == 1) 
 		{
+			wake_up_after_sleep();
 			if(comm_changed == 1)
 			{		
 				comm_changed = 0;
@@ -81,6 +82,7 @@ volatile int adc_diff = 0;
 		
 		if ((x[1] != x_prev[1]&& adc_diff > 50) || comm_changed == 2)
 		{				
+			wake_up_after_sleep();
 			if(comm_changed == 2)
 			{
 				comm_changed = 0;
@@ -101,6 +103,7 @@ volatile int adc_diff = 0;
 
 		if ((x[2] != x_prev[2] && adc_diff > 50) || comm_changed == 3)
 		{				
+			wake_up_after_sleep();
 			if(comm_changed == 3)
 			{
 				comm_changed = 0;
@@ -157,21 +160,6 @@ void config_mode()
 		
 }
 
-#define F_OSC 8000000
-#define USART_BAUDRATE 9600
-#define BAUD_PRESCALE (((F_OSC / (USART_BAUDRATE * 16UL))) - 1) 
-void uart_init()
-{
-	UBRR0H = (unsigned char)(BAUD_PRESCALE>>8);
-	UBRR0L = (unsigned char)BAUD_PRESCALE;
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);
-	UCSR0C = (3<<UCSZ00);	
-	
-	DDRD &= ~(1 << PD0);
-	DDRD |= (1 << PD1);
-}
-
-
 
 int main(void) 
  {  
@@ -181,15 +169,10 @@ int main(void)
 	led_init();
 	speaker_init();
 	rfm12_init();
-	rfm12_set_wakeup_timer(0x1FFF);
-	uart_init();
-
 	_delay_ms(100);
 	sei();
 	read_silent_values();
 	branie_counter = 500;
-	
-	//rfm12_set_wakeup_timer(0x804);
 
 	while(1)
 	{     
@@ -266,12 +249,13 @@ int main(void)
 			if (rfm12_rx_status() == STATUS_COMPLETE)
 			{
 			    bufcontents = rfm12_rx_buffer();
-			//	uart_put(bufcontents[0]);
 				parse_buffer(rfm12_rx_buffer(), rfm12_rx_len());     
 		        rfm12_rx_clear();
 			}
 			
 			rfm12_poll();
+			rfm12_tick();
+	
 		}
 
 	}  

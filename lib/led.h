@@ -7,6 +7,14 @@
 Intializes LEDs
 */
 
+extern volatile unsigned char STATUS;
+extern volatile unsigned char GO_TO_POWER_DOWN;
+extern volatile unsigned char NIGHT;
+extern volatile unsigned char ANTI_THEFT;
+extern volatile unsigned char PAIRING;
+extern unsigned volatile char SENSIVITY;
+extern volatile unsigned char comm_changed;
+
 extern unsigned volatile char COLOR;
 extern unsigned volatile char BRIGHTNESS;
 extern volatile unsigned char led_turn_off;

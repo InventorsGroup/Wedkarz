@@ -2,6 +2,7 @@
 #include "led.h"
 #include "speaker.h"
 #include "pot.h"
+#include "comm.h"
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include <avr/io.h> 
@@ -10,10 +11,6 @@
 
 void power_down();
 void wake_up();
-extern volatile unsigned char STATUS;
-extern volatile unsigned char GO_TO_POWER_DOWN;
-extern volatile unsigned char NIGHT;
-extern volatile unsigned char ANTI_THEFT;
-extern volatile unsigned char PAIRING;
-extern unsigned volatile char SENSIVITY;
-extern volatile unsigned char comm_changed;
+void sleep();
+void wake_up_after_sleep();
+extern volatile unsigned char anti_theft_delay_cnter;
