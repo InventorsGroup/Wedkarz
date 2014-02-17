@@ -48,10 +48,10 @@ void sleep()
 }
 
 volatile unsigned char anti_theft_delay_cnter = 0;
-void wake_up_after_sleep()
+void wake_up_after_sleep(char anti_theft)
 {
 
-	if(ANTI_THEFT > 0 && anti_theft_delay_cnter > 5)
+	if(ANTI_THEFT > 0 && anti_theft_delay_cnter > 5 && anti_theft > 0)
 		send_command(0x02, 0x01);
 
 	if(sleeped == 0)

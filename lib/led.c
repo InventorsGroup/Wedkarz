@@ -16,6 +16,7 @@ volatile unsigned char ANTI_THEFT = 0;
 volatile unsigned char GO_TO_POWER_DOWN = 1;
 volatile unsigned char PAIRING = 0;
 volatile unsigned char comm_changed = 0;
+volatile unsigned int theft_alarm_counter = 0;
 
 unsigned volatile char COLOR = 1;
 unsigned volatile char BRIGHTNESS = 6;

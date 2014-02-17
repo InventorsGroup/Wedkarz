@@ -8,7 +8,6 @@
 #include "pot.h"
 #include "comm.h"
 
-extern volatile unsigned int theft_alarm_counter;
 extern volatile unsigned char theft_alarm_light_counter;
 extern volatile unsigned char kontaktr_set_delay;
 extern volatile unsigned int branie_counter;

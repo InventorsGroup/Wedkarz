@@ -14,6 +14,7 @@ extern volatile unsigned char ANTI_THEFT;
 extern volatile unsigned char PAIRING;
 extern unsigned volatile char SENSIVITY;
 extern volatile unsigned char comm_changed;
+extern volatile unsigned int theft_alarm_counter;
 
 extern unsigned volatile char COLOR;
 extern unsigned volatile char BRIGHTNESS;

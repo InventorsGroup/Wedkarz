@@ -1,4 +1,5 @@
 #include "comm.h"
+#include "power.h"
 
 uint8_t SYG_ID[] = {0xFF, 0xFE, 0xFE, 0xFE};
 void parse_buffer(uint8_t *bufcontents, uint8_t length)
@@ -36,6 +37,7 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				bufcontents[i+3] != SYG_ID[3] )
 				return;
 
+			wake_up_after_sleep(0);
 
 			switch(bufcontents[i+4])
 			{
@@ -84,13 +86,15 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				if(bufcontents[i+5] == 0x01)
 				{
 					ANTI_THEFT = 1;
-					send_command(0x02, 0x03);
+					theft_alarm_counter = 0;
+					anti_theft_delay_cnter = 0;
+					//send_command(0x02, 0x03);
 				}
 				else if(bufcontents[i+5] == 0x02)
 				{
 					ANTI_THEFT = 0;
 					THEFT_ALARM = 2;
-					send_command(0x02, 0x04);
+					//send_command(0x02, 0x04);
 				}
 
 				break;

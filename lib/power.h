@@ -12,5 +12,5 @@
 void power_down();
 void wake_up();
 void sleep();
-void wake_up_after_sleep();
+void wake_up_after_sleep(char anti_theft);
 extern volatile unsigned char anti_theft_delay_cnter;

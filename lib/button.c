@@ -30,7 +30,6 @@ volatile unsigned char night_tmp = 0;
 volatile unsigned int branie_counter = 500, branie_counter2 = 0;
 volatile unsigned char branie_dir = 0;
 volatile unsigned char config_blink_counter = 0;
-volatile unsigned int theft_alarm_counter = 0;
 volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
@@ -391,7 +390,7 @@ ISR(PCINT0_vect) // CENTER_BTN
 		center_btn_counter = 1;
 	}
 	
-	wake_up_after_sleep();
+	wake_up_after_sleep(1);
 }
 
 unsigned static volatile char sens_tab[] = {8, 15, 25, 45, 60, 80};
@@ -444,7 +443,7 @@ void kontaktron_check()
 ISR(PCINT1_vect) // KONTAKTR_BOT, KONTAKTR_TOP
 {
 	kontaktron_check();	
-	wake_up_after_sleep();
+	wake_up_after_sleep(1);
 }
 
 ISR(PCINT2_vect) // TOP_BTN
@@ -458,6 +457,6 @@ ISR(PCINT2_vect) // TOP_BTN
 		kontaktron_check();
 	}
 		
-	wake_up_after_sleep();
+	wake_up_after_sleep(1);
 }
 

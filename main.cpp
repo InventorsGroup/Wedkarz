@@ -61,7 +61,7 @@ volatile int adc_diff = 0;
 		
 		if ((x[0] != x_prev[0] && adc_diff > 50) || comm_changed == 1) 
 		{
-			wake_up_after_sleep();
+			wake_up_after_sleep(1);
 			if(comm_changed == 1)
 			{		
 				comm_changed = 0;
@@ -82,7 +82,7 @@ volatile int adc_diff = 0;
 		
 		if ((x[1] != x_prev[1]&& adc_diff > 50) || comm_changed == 2)
 		{				
-			wake_up_after_sleep();
+			wake_up_after_sleep(1);
 			if(comm_changed == 2)
 			{
 				comm_changed = 0;
@@ -103,7 +103,7 @@ volatile int adc_diff = 0;
 
 		if ((x[2] != x_prev[2] && adc_diff > 50) || comm_changed == 3)
 		{				
-			wake_up_after_sleep();
+			wake_up_after_sleep(1);
 			if(comm_changed == 3)
 			{
 				comm_changed = 0;
@@ -187,7 +187,7 @@ int main(void)
 			{
 				if(theft_alarm_counter < 300)		
 				{	
-					if(theft_alarm_counter == 10)
+					if(theft_alarm_counter == 10 || theft_alarm_counter == 20)
 					{
 						send_command(0x02, 0x01);
 						led_power(100);
