@@ -4,8 +4,7 @@
 
 void speaker_init();
 ISR(TIMER2_COMPA_vect);
-void play_speaker_alt(int length);
-void play_speaker(int length);
+void play_speaker(int length, char alt);
 void play_speaker_custom(int length);
 void set_speaker(char state);
 void set_custom_speaker(unsigned char v, unsigned char f);

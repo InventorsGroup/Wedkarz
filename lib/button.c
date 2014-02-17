@@ -152,6 +152,9 @@ ISR(TIMER0_COMPA_vect)
 	} 
 	else if(STATUS != 0)
 	{
+	
+		if(THEFT_ALARM == 0)
+		{			
 			if(TIME > 1 && silent_time > 0)
 			{
 				silent_time++;
@@ -161,118 +164,121 @@ ISR(TIMER0_COMPA_vect)
 
 			}
 
-		if(kometa_cnter > 0)
-		{
-			kometa_cnter++;
-
-			if(kometa_cnter > 2 && kometa_pos < 6)
+			if(kometa_cnter > 0)
 			{
-				led_bar_clear();
-				if(branie_dir == 0)
-					led_set(kometa_pos, COLOR);
-				else
-					led_set(5-kometa_pos, COLOR);
+				kometa_cnter++;
 
-				led_push();
-			
-				kometa_pos++;
-
-				if(kometa_pos == 6)
+				if(kometa_cnter > 2 && kometa_pos < 6)
 				{
-					kometa_cnter = 0;
-					kometa_pos = 0;
-				}
-				else
-					kometa_cnter = 1;
-			}
-		}
-	
-		if(adc[FOTO1] > 800 && wedka_cnter < 40)
-		{
-			wedka_cnter++;
-		}
-		
-		if(adc[FOTO1] < 400 && wedka_cnter > 0)
-		{
-			wedka_cnter--;
-		}
+					led_bar_clear();
+					if(branie_dir == 0)
+						led_set(kometa_pos, COLOR);
+					else
+						led_set(5-kometa_pos, COLOR);
 
-		if(TIME > 1 &&  wedka_cnter > 20 && wedka_polozona == 0 && silent_time == 0)
-		{
-			silent_time = 1;   
-			wedka_polozona = 1;
-		}
-		
-		if(TIME > 1 && wedka_cnter < 10 && wedka_polozona == 1)
-		{
-			wedka_polozona = 0;
-		}
-	
-		if(branie_counter < 400)
-		{
-			branie_counter++;			
-			if(branie_dir == 0)
-			{
-				branie_counter2++;
+					led_push();
+				
+					kometa_pos++;
 
-				if(branie_counter2 > 6)
-				{
-					if(branie_counter % 2 == 0)
+					if(kometa_pos == 6)
 					{
-						led_set(6, COLOR);
+						kometa_cnter = 0;
+						kometa_pos = 0;
 					}
 					else
-					{
-						led_set(6, 0);
-					}
-					
-					led_push();
-					branie_counter2 = 0;
+						kometa_cnter = 1;
 				}
-			}			
-			if(branie_counter == 400)
+			}
+		
+			if(adc[FOTO1] > 800 && wedka_cnter < 40)
 			{
-				led_turn_off = 0;
-				led_clear();
-				sleep();
+				wedka_cnter++;
+			}
+			
+			if(adc[FOTO1] < 400 && wedka_cnter > 0)
+			{
+				wedka_cnter--;
 			}
 
-
-		}else if(THEFT_ALARM == 0 && led_turn_off > 0)
-		{
-			led_turn_off++;
-
-			if(led_turn_off > 150)
+			if(TIME > 1 &&  wedka_cnter > 20 && wedka_polozona == 0 && silent_time == 0)
 			{
-				led_turn_off = 0;
-				led_clear();
-				sleep();
+				silent_time = 1;   
+				wedka_polozona = 1;
 			}
+			
+			if(TIME > 1 && wedka_cnter < 10 && wedka_polozona == 1)
+			{
+				wedka_polozona = 0;
+			}
+		
+			if(branie_counter < 400)
+			{
+				branie_counter++;			
+				if(branie_dir == 0)
+				{
+					branie_counter2++;
+
+					if(branie_counter2 > 6)
+					{
+						if(branie_counter % 2 == 0)
+						{
+							led_set(6, COLOR);
+						}
+						else
+						{
+							led_set(6, 0);
+						}
+						
+						led_push();
+						branie_counter2 = 0;
+					}
+				}			
+				if(branie_counter == 400)
+				{
+					led_turn_off = 0;
+					led_clear();
+					sleep();
+				}
+
+
+			}
+			else if(led_turn_off > 0)
+			{
+				led_turn_off++;
+
+				if(led_turn_off > 150)
+				{
+					led_turn_off = 0;
+					led_clear();
+					sleep();
+				}
+			}
+
+			if(STATUS == 2 || STATUS == 4)
+			{
+				if(adc[FOTO2] < 5)
+				{
+					if(night_tmp < 50)
+						night_tmp++;
+				}
+				else if(night_tmp > 0 && adc[FOTO2] > 10)
+				{
+					night_tmp--;
+				}
+
+				if(night_tmp > 30)
+				{
+					led_set(8, 1);
+				}
+				else if(night_tmp == 0)
+				{	
+					led_set(8, 0);
+				}
+				led_push();
+			}
+
 		}
-
-		if(STATUS == 2 || STATUS == 4)
-		{
-			if(adc[FOTO2] < 5)
-			{
-				if(night_tmp < 50)
-					night_tmp++;
-			}
-			else if(night_tmp > 0 && adc[FOTO2] > 10)
-			{
-				night_tmp--;
-			}
-
-			if(night_tmp > 30)
-			{
-				led_set(8, 1);
-			}
-			else if(night_tmp == 0)
-			{	
-				led_set(8, 0);
-			}
-			led_push();
-		}
-
+		
 		if(ANTI_THEFT > 0 && adc[FOTO1] < 400)
 		{
 			 THEFT_ALARM = 1;
@@ -421,11 +427,7 @@ void kontaktron_check()
 				
 				send_command(0x01, (branie_dir+1) | (SPK_FREQ << 2));
 
-
-                if(branie_dir > 0)
-                        play_speaker(50);
-                else
-                        play_speaker_alt(50);
+                play_speaker(50, branie_dir);
 
             	led_set(6, COLOR);
                 led_set(7, 1);

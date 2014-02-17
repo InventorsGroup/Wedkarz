@@ -90,7 +90,7 @@ void wake_up()
     if(CENTER_BTN)
     {
     	STATUS = 5;
-    	play_speaker(1000);
+    	play_speaker(1000, 0);
     }
     else
     {      

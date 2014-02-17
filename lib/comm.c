@@ -84,11 +84,13 @@ void parse_buffer(uint8_t *bufcontents, uint8_t length)
 				if(bufcontents[i+5] == 0x01)
 				{
 					ANTI_THEFT = 1;
+					send_command(0x02, 0x03);
 				}
 				else if(bufcontents[i+5] == 0x02)
 				{
 					ANTI_THEFT = 0;
 					THEFT_ALARM = 2;
+					send_command(0x02, 0x04);
 				}
 
 				break;

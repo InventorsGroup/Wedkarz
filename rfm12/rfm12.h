@@ -107,7 +107,7 @@ uint8_t rfm12_tx(uint8_t len, uint8_t type, uint8_t *data);
 
 //if polling is used, define a polling function
 #if RFM12_USE_POLLING
-uint8_t rfm12_poll(void);
+void rfm12_poll(void);
 #endif
 
 

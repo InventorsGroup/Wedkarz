@@ -74,7 +74,7 @@ volatile int adc_diff = 0;
 			}
 
 			led_bar(VOL + 2, COLOR, 1);			
-			play_speaker(100);
+			play_speaker(100, 0);
 		}
 
 		adc_diff = adc[POT2]- x_prev2[1];
@@ -95,7 +95,7 @@ volatile int adc_diff = 0;
 			}
 			
 			led_bar(6-SPK_FREQ, COLOR, 1);			
-			play_speaker(100);	
+			play_speaker(100, 0);	
 		}
 
 		adc_diff = adc[POT3]- x_prev2[2];
@@ -116,7 +116,7 @@ volatile int adc_diff = 0;
 			}
 		
 			led_bar(SENSIVITY + 1, COLOR, 1);
-			play_speaker(100);		
+			play_speaker(100, 0);		
 		}
 	
 }
@@ -188,8 +188,10 @@ int main(void)
 				if(theft_alarm_counter < 300)		
 				{	
 					if(theft_alarm_counter == 10)
+					{
 						send_command(0x02, 0x01);
-					
+						led_power(100);
+					}
 					if(theft_alarm_light_counter < 6)
 					{
 						led_bar(6, 1, 1);
@@ -227,6 +229,7 @@ int main(void)
 				led_set(8, 0);
 				send_command(0x02, 0x02);
 				THEFT_ALARM  = 0;
+				led_brightness_to_power();
 			}
 
 			if(STATUS == 5)
