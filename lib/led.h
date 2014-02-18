@@ -53,7 +53,7 @@ void led_power(unsigned char p);
 Sets physical state on leds as preset with led_set function (LEDs 0-7)
 */
 void led_push();
-
+void led_push(char turn_off);
 /*
 Clears LEDs 0-7
 */

@@ -38,12 +38,12 @@ void power_down()
 volatile char sleeped = 0;
 void sleep()
 {
-	if(ANTI_THEFT == 0 && STATUS != 2 && STATUS != 4)
-		TCCR0B = 0;//button timer 0
-		
+	if(ANTI_THEFT > 0 || STATUS == 2  || STATUS == 4)
+		return;
+	
+	TCCR0B = 0;//button timer 0	
 	TCCR1A = 0;
     TCCR1B = 0;
-	led_enable(0);
 	sleeped = 1;
 }
 

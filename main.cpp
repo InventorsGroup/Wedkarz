@@ -160,6 +160,7 @@ void config_mode()
 		
 }
 
+volatile unsigned char pooler = 0;
 int main(void) 
  {  
  	button_init();
@@ -183,55 +184,6 @@ int main(void)
 		}
 		else
 		{
-			if(THEFT_ALARM == 1)
-			{
-				if(theft_alarm_counter < 300)		
-				{	
-					if(theft_alarm_counter == 10 || theft_alarm_counter == 20)
-					{
-						send_command(0x02, 0x01);
-						led_power(100);
-					}
-					if(theft_alarm_light_counter < 6)
-					{
-						led_bar(6, 1, 1);
-						led_set(6, 1);
-						led_set(7,1);
-						led_set(8,1);
-						led_push();			
-						set_custom_speaker(90, 130);
-						set_speaker(1);
-					}
-					else
-					{
-						led_bar(6, 2, 1);
-						led_set(6, 2);
-						led_set(7,1);
-						led_set(8,1);
-						led_push();		
-
-						set_speaker(0);		
-					}
-				}
-				else if(theft_alarm_counter == 300)
-				{
-					set_speaker(0);
-					led_clear();
-					led_push();
-				}
-			}
-			else if(THEFT_ALARM == 2)
-			{
-				theft_alarm_counter = 0;
-				set_speaker(0);
-				led_clear();
-				led_push();
-				led_set(8, 0);
-				send_command(0x02, 0x02);
-				THEFT_ALARM  = 0;
-				led_brightness_to_power();
-			}
-
 			if(STATUS == 5)
 			{
 				x[0] = adc[POT1]/150; // volume or color
@@ -255,9 +207,15 @@ int main(void)
 		        rfm12_rx_clear();
 			}
 			
-			rfm12_poll();
+			if(pooler < 10)
+				pooler++;
+			else
+			{
+				rfm12_poll();
+				pooler = 0;
+			}
+			
 			rfm12_tick();
-	
 		}
 
 	}  

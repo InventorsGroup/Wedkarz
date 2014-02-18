@@ -63,8 +63,8 @@ void led_enable(unsigned char s)
 	if (s > 0 && OCR1A == 255) 
 	{		
 		PORTD |= (1 << PD5);
-		_delay_ms(40);
-		led_power(led_pwr);		
+		_delay_ms(20);
+		led_brightness_to_power();	
 	}
 	else if(s == 0)
  	{
@@ -164,7 +164,10 @@ void led_set(unsigned char n, unsigned char color)
 
 void led_push()
 {
-
+	led_push(1);
+}
+void led_push(char turn_off)
+{
 	for (unsigned char i = 0; i<36; i++)
 	{
 		
@@ -179,8 +182,9 @@ void led_push()
 
 	led_enable(1);
 
-	led_turn_off = 1;
-}
+	if(turn_off == 1)
+		led_turn_off = 1;
+}	
 
 void led_clear()
 {
