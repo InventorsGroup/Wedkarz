@@ -22,7 +22,7 @@ void speaker_init()
 
 void set_speaker(char state)
 {
-	if(state > 0)
+	if(state > 0 && !(TCCR2B & (1 << CS22)))
 	{
 		TCCR2B |= (1 << CS22);
 	}
@@ -78,7 +78,7 @@ ISR(TIMER2_COMPA_vect)
 {
 	
 	if(OCR2A + ACTUAL_FREQ > 255)
-		OCR2A = ((OCR2A+ ACTUAL_FREQ) - 256);
+		OCR2A = ((OCR2A+ ACTUAL_FREQ) - 255);
 	else
 		OCR2A += ACTUAL_FREQ;
 
@@ -93,7 +93,7 @@ ISR(TIMER2_COMPB_vect)
 	volume /= 100;
 	
 	if(OCR2A + volume > 255)
-		OCR2B = ((OCR2A +  volume) - 256);
+		OCR2B = ((OCR2A +  volume) - 255);
 	else
 		OCR2B = OCR2A +  volume;
 

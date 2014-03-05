@@ -86,17 +86,18 @@ ISR(TIMER0_COMPA_vect)
 				send_command(0x02, 0x01);
 				led_power(100);
 			}
-			if(theft_alarm_light_counter < 6)
+			if(theft_alarm_light_counter == 0)
 			{
+				set_custom_speaker(80, 110);
+				set_speaker(1);
+				
 				led_bar(6, 1, 1);
 				led_set(6, 1);
 				led_set(7,1);
 				led_set(8,1);
-				led_push();			
-				set_custom_speaker(90, 130);
-				set_speaker(1);
+				led_push();		
 			}
-			else
+			else if(theft_alarm_light_counter == 5)
 			{
 				led_bar(6, 2, 1);
 				led_set(6, 2);

@@ -174,6 +174,7 @@ int main(void)
 	read_silent_values();
 	branie_counter = 500;
 	
+
 	while(1)
 	{     
 		if(GO_TO_POWER_DOWN > 0 && THEFT_ALARM == 0)
