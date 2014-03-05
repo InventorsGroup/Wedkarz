@@ -61,6 +61,7 @@ void wake_up_after_sleep(char anti_theft)
 	TCCR0B |= (1 << CS00) | (1 << CS02);
     TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
     TCCR1B |= (1 << CS11) | (1 << CS10);
+	speaker_init();
 	sleeped = 0;
 }
 
@@ -86,6 +87,7 @@ void wake_up()
     TCCR1B |= (1 << CS11) | (1 << CS10);
 	
 	rfm12_power_up();
+	speaker_init();
 	
     if(CENTER_BTN)
     {

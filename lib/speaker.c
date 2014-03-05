@@ -89,7 +89,7 @@ ISR(TIMER2_COMPA_vect)
 	else
 		OCR2A += ACTUAL_FREQ;
 
-		PORTD |= (1 << PD6);
+	PORTD |= (1 << PD6);
 
 }
 
