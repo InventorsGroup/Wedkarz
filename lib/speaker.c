@@ -16,8 +16,8 @@ void speaker_init()
 	//TCCR2B |= (1 << CS22);
 	DDRD |= (1 << PD6);
 	TIMSK2 |= (1 << OCIE2A) | (1 << OCIE2B);
-	OCR2A = 1;
-	OCR2B = 2;
+	OCR2A = 0;
+	OCR2B = 1;
 }
 
 void set_speaker(char state)
@@ -29,10 +29,11 @@ void set_speaker(char state)
 	else if(state == 0)
 	{
 		TCCR2B &= ~(1 << CS22);
-		PORTD &= ~(1 << PD6);
 		TCNT2 = 0;
-		OCR2A = 1;
-		OCR2B = 2;
+		OCR2A = 0;
+		OCR2B = 1;
+		PORTD &= ~(1 << PD6);
+	
 	}
 }
 
@@ -48,8 +49,9 @@ void play_speaker(int length, char alt)
 
 		ACTUAL_FREQ = freq_tab[SPK_FREQ + alt];
 		ACTUAL_VOL = vol_tab[VOL];
-		set_speaker(1);
 		spk_cnt = length / 50;
+		set_speaker(1);
+		
 }
 
 void play_speaker_custom(int length)
@@ -74,15 +76,6 @@ void set_custom_speaker(unsigned char v, unsigned char f)
 
 ISR(TIMER2_COMPA_vect)
 {
-
-	unsigned volatile int volume = ACTUAL_FREQ / 2;
-	volume = volume * ACTUAL_VOL;
-	volume /= 100;
-	
-	if(OCR2A + volume > 255)
-		OCR2B = ((OCR2A +  volume) - 256);
-	else
-		OCR2B = OCR2A +  volume;
 	
 	if(OCR2A + ACTUAL_FREQ > 255)
 		OCR2A = ((OCR2A+ ACTUAL_FREQ) - 256);
@@ -95,5 +88,14 @@ ISR(TIMER2_COMPA_vect)
 
 ISR(TIMER2_COMPB_vect)
 {
+	unsigned volatile int volume = ACTUAL_FREQ / 2;
+	volume = volume * ACTUAL_VOL;
+	volume /= 100;
+	
+	if(OCR2A + volume > 255)
+		OCR2B = ((OCR2A +  volume) - 256);
+	else
+		OCR2B = OCR2A +  volume;
+
 	PORTD &= ~(1 << PD6);
 }
