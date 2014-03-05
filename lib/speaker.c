@@ -3,7 +3,7 @@
 unsigned volatile char spk_cnt = 0;
 unsigned volatile char SPK_FREQ = 0;
 volatile char VOL = 0;
-unsigned volatile char vol_tab[] = {15, 30, 60, 80, 90};
+unsigned volatile char vol_tab[] = {15, 30, 45, 55, 85};
 unsigned volatile char freq_tab[] = {90, 110, 140, 160, 180, 200, 250};
 volatile unsigned int silent_time = 0;
 unsigned volatile char TIME = 1;
