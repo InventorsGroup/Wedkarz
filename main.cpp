@@ -198,6 +198,7 @@ int main(void)
 				x[1] = adc[POT2]/200; // freq or brigthness
 				x[2] = adc[POT3]/200; // sensivity
 				normal_mode();
+				led_bar(TIME, COLOR, 1);
 
 			}
 

@@ -31,11 +31,12 @@ volatile unsigned int branie_counter = 500, branie_counter2 = 0;
 volatile unsigned char branie_dir = 0;
 volatile unsigned char config_blink_counter = 0;
 volatile unsigned char theft_alarm_light_counter = 0;
-volatile unsigned char wedka_polozona = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
 
-//od konaktrona
+volatile unsigned int silent_times[] = {400, 600, 800, 1000, 1300};
+
+//od kontakrona
 unsigned volatile char kon1 = 0;
 unsigned volatile char dir = 0;
 unsigned volatile char pos2 = 0;
@@ -50,7 +51,6 @@ ISR(TIMER0_COMPA_vect)
 	{
 		led_set(9,0);
 	}
-	
 	
 	if(spk_cnt > 0)
 	{
@@ -75,10 +75,7 @@ ISR(TIMER0_COMPA_vect)
 			theft_alarm_light_counter++;
 		else
 			theft_alarm_light_counter = 0;
-	}
-	
-	if(THEFT_ALARM == 1)
-	{
+			
 		if(theft_alarm_counter < 300)		
 		{	
 			if(theft_alarm_counter == 10 || theft_alarm_counter == 20)
@@ -207,7 +204,7 @@ ISR(TIMER0_COMPA_vect)
 			{
 				silent_time++;
 
-				if(silent_time > TIME * 200)
+				if(silent_time > silent_times[TIME-2])
 					silent_time = 0;
 
 			}
@@ -238,25 +235,19 @@ ISR(TIMER0_COMPA_vect)
 				}
 			}
 		
-			if(adc[FOTO1] > 800 && wedka_cnter < 40)
+			if(adc[FOTO1] > 300 && wedka_cnter < 30 && TIME > 1)
 			{
-				wedka_cnter++;
+				wedka_cnter++;				
+				if(wedka_cnter == 30)
+				{
+					silent_time = 1;
+					play_speaker(50, branie_dir);
+				}
 			}
 			
-			if(adc[FOTO1] < 400 && wedka_cnter > 0)
+			if(adc[FOTO1] < 200 && wedka_cnter > 0 && TIME > 1)
 			{
-				wedka_cnter--;
-			}
-
-			if(TIME > 1 &&  wedka_cnter > 20 && wedka_polozona == 0 && silent_time == 0)
-			{
-				silent_time = 1;   
-				wedka_polozona = 1;
-			}
-			
-			if(TIME > 1 && wedka_cnter < 10 && wedka_polozona == 1)
-			{
-				wedka_polozona = 0;
+				wedka_cnter--;				
 			}
 		
 			if(branie_counter < 400)
@@ -462,20 +453,16 @@ void kontaktron_check()
         {
              pos2 = 0;
 
-                if(STATUS != 3 && STATUS != 4 && kometa_cnter == 0)
-                {            
-                	branie_dir = dir;     
+                if(kometa_cnter == 0 || branie_dir != dir)
+                {               
             		kometa_cnter = 1;
+					branie_dir = dir;
             	}
-            	else
-            	if(STATUS == 3 || STATUS == 4)
-            	{
-            		branie_dir = dir;
-            	}
-				
+
 				send_command(0x01, (branie_dir+1) | (SPK_FREQ << 2));
 
-                play_speaker(50, branie_dir);
+				if(TIME == 1 || silent_time == 0)
+					play_speaker(50, branie_dir);
 
             	led_set(6, COLOR);
                 led_set(7, 1);

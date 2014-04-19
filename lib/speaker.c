@@ -39,28 +39,24 @@ void set_speaker(char state)
 
 void play_speaker(int length, char alt)
 {
-	if(((TIME > 1 && silent_time > 0) || VOL == -1) &&  THEFT_ALARM == 0)
-	{
+	if(VOL == -1 &&  THEFT_ALARM == 0)
 		return;
-	}
 
 	if(spk_cnt != 0)
 		return;
 
-		ACTUAL_FREQ = freq_tab[SPK_FREQ + alt];
-		ACTUAL_VOL = vol_tab[VOL];
-		spk_cnt = length / 50;
-		set_speaker(1);
+	ACTUAL_FREQ = freq_tab[SPK_FREQ + alt];
+	ACTUAL_VOL = vol_tab[VOL];
+	spk_cnt = length / 50;
+	set_speaker(1);
 		
 }
 
 void play_speaker_custom(int length)
 {
-	if(((TIME > 1 && silent_time > 0) || VOL == -1) &&  THEFT_ALARM == 0)
-	{
+	if(VOL == -1 && THEFT_ALARM == 0)
 		return;
-	}
-
+		
 	if(spk_cnt != 0)
 		return;
 
