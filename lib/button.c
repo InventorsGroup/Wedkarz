@@ -34,7 +34,7 @@ volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
 
-volatile unsigned int silent_times[] = {400, 600, 800, 1000, 1300};
+volatile unsigned int silent_times[] = {1350, 1800, 2700, 3600, 5400};
 
 //od kontakrona
 unsigned volatile char kon1 = 0;
@@ -241,11 +241,11 @@ ISR(TIMER0_COMPA_vect)
 				if(wedka_cnter == 30)
 				{
 					silent_time = 1;
-					play_speaker(50, branie_dir);
+					play_speaker(50, 0);
 				}
 			}
 			
-			if(adc[FOTO1] < 200 && wedka_cnter > 0 && TIME > 1)
+			if(adc[FOTO1] < 200 && wedka_cnter > 0 && TIME > 1 && silent_time == 0)
 			{
 				wedka_cnter--;				
 			}
