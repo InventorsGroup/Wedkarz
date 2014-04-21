@@ -5,6 +5,7 @@ unsigned volatile char SPK_FREQ = 0;
 volatile char VOL = 0;
 unsigned volatile char vol_tab[] = {15, 30, 45, 55, 85};
 unsigned volatile char freq_tab[] = {90, 110, 140, 160, 180, 200, 250};
+unsigned volatile char freq2_tab[] = {50, 70, 120, 150, 170, 190, 210};
 volatile unsigned int silent_time = 0;
 unsigned volatile char TIME = 1;
 unsigned volatile char ACTUAL_FREQ = 100;
@@ -36,8 +37,12 @@ void set_speaker(char state)
 	
 	}
 }
-
 void play_speaker(int length, char alt)
+{
+	play_speaker(length, alt, 0);
+}
+
+void play_speaker(int length, char alt, char tab)
 {
 	if(VOL == -1 &&  THEFT_ALARM == 0)
 		return;
@@ -45,7 +50,11 @@ void play_speaker(int length, char alt)
 	if(spk_cnt != 0)
 		return;
 
-	ACTUAL_FREQ = freq_tab[SPK_FREQ + alt];
+	if(tab == 0)
+		ACTUAL_FREQ = freq_tab[6- SPK_FREQ + alt];
+	else
+		ACTUAL_FREQ = freq2_tab[6- SPK_FREQ + alt];
+		
 	ACTUAL_VOL = vol_tab[VOL];
 	spk_cnt = length / 50;
 	set_speaker(1);

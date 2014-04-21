@@ -33,9 +33,11 @@ volatile unsigned char config_blink_counter = 0;
 volatile unsigned char theft_alarm_light_counter = 0;
 volatile unsigned char wedka_cnter = 0;
 volatile unsigned char kometa_cnter = 0, kometa_pos = 0;
+unsigned volatile char next_fast = 0, fast_cnter = 0, fast_timer = 0;
 
 volatile unsigned int silent_times[] = {1350, 1800, 2700, 3600, 5400};
-
+unsigned static volatile char sens_tab[] = {10, 20, 30, 45, 60, 80};
+unsigned static volatile char fast_tab[] = {12, 10, 9, 6, 4, 2};
 //od kontakrona
 unsigned volatile char kon1 = 0;
 unsigned volatile char dir = 0;
@@ -197,7 +199,7 @@ ISR(TIMER0_COMPA_vect)
 	} 
 	else if(STATUS != 0)
 	{
-	
+
 		if(THEFT_ALARM == 0 || theft_alarm_counter > 300)
 		{			
 			if(TIME > 1 && silent_time > 0)
@@ -206,7 +208,20 @@ ISR(TIMER0_COMPA_vect)
 
 				if(silent_time > silent_times[TIME-2])
 					silent_time = 0;
-
+			}
+			
+			if(fast_timer < 20)
+				fast_timer++;
+			else
+			{
+				fast_timer =0;
+					
+				if(fast_cnter > fast_tab[SENSIVITY])
+					next_fast = 1;					
+				else
+					next_fast = 0;
+						
+				fast_cnter = 0;
 			}
 
 			if(kometa_cnter > 0)
@@ -241,7 +256,6 @@ ISR(TIMER0_COMPA_vect)
 				if(wedka_cnter == 30)
 				{
 					silent_time = 1;
-					play_speaker(50, 0);
 				}
 			}
 			
@@ -433,25 +447,25 @@ ISR(PCINT0_vect) // CENTER_BTN
 	wake_up_after_sleep(1);
 }
 
-unsigned static volatile char sens_tab[] = {8, 15, 25, 45, 60, 80};
 void kontaktron_check()
 {
 
         if(STATUS == 0 || STATUS == 5 || TOP_BTN || CENTER_BTN)
                 return;
-
-            
-        if(!KONTAKTR_BOT && KONTAKTR_OR)
-        {        
-             dir = kon1;        
-        }
-
-        if(KONTAKTR_BOT == KONTAKTR_OR)
+		
+		char bot = KONTAKTR_BOT;
+		char oor = KONTAKTR_OR;
+				
+        if(!bot && oor)   
+             dir = kon1;     
+			 
+        if(bot == oor)
      	   kon1 = KONTAKTR_BOT;
 
         if(pos2 > sens_tab[SENSIVITY])
         {
              pos2 = 0;
+
 
                 if(kometa_cnter == 0 || branie_dir != dir)
                 {               
@@ -459,11 +473,20 @@ void kontaktron_check()
 					branie_dir = dir;
             	}
 
-				send_command(0x01, (branie_dir+1) | (SPK_FREQ << 2));
+				//send_command(0x01, (branie_dir+1) | (SPK_FREQ << 2));
 
 				if(TIME == 1 || silent_time == 0)
-					play_speaker(50, branie_dir);
+				{	
+					if(fast_cnter < 200)				
+						fast_cnter++;
+				  
+					if(next_fast == 1)
+						play_speaker(50, branie_dir, 1);					
+					else
+						play_speaker(50, branie_dir, 0);
 
+				}
+				
             	led_set(6, COLOR);
                 led_set(7, 1);
                 led_push();
