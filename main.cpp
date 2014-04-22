@@ -7,7 +7,6 @@
 #include "lib/speaker.h"
 #include "lib/button.h"
 #include "lib/comm.h"
-#include "lib/rfm12.h"
 
 volatile unsigned int x_prev[3], x[3], x_prev2[3];
 volatile uint8_t *bufcontents;
