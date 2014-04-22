@@ -17,7 +17,6 @@ void power_down()
 	EIMSK |= (1 << INT1); // ustaw inta
 
     ANTI_THEFT = 0;
-    PAIRING = 0;
     
     pot_deinit();
     led_enable(0);
@@ -50,10 +49,6 @@ void sleep()
 volatile unsigned char anti_theft_delay_cnter = 0;
 void wake_up_after_sleep(char anti_theft)
 {
-
-	if(ANTI_THEFT > 0 && anti_theft_delay_cnter > 5 && anti_theft > 0)
-		send_command(0x02, 0x01);
-
 	if(sleeped == 0)
 	return;
 	
@@ -86,7 +81,6 @@ void wake_up()
     TCCR1A |= (1 << COM1A1) | (1 << WGM10) | (1 << WGM12);
     TCCR1B |= (1 << CS11) | (1 << CS10);
 	
-	rfm12_power_up();
 	speaker_init();
 	
     if(CENTER_BTN)

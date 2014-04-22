@@ -82,7 +82,6 @@ ISR(TIMER0_COMPA_vect)
 		{	
 			if(theft_alarm_counter == 10 || theft_alarm_counter == 20)
 			{
-				send_command(0x02, 0x01);
 				led_power(100);
 			}
 			if(theft_alarm_light_counter == 0)
@@ -122,7 +121,6 @@ ISR(TIMER0_COMPA_vect)
 		led_clear();
 		led_push();
 		led_set(8, 0);
-		send_command(0x02, 0x02);
 		THEFT_ALARM  = 0;
 		led_brightness_to_power();
 	}
@@ -135,13 +133,11 @@ ISR(TIMER0_COMPA_vect)
 		{
 			config_blink_counter = 0;
 			led_set(8,0);
-			led_set(7, 0);
 			led_push();
 		}
 		else if(config_blink_counter > 20)
 		{
 			led_set(8,1);
-			if(PAIRING > 0) led_set(7,1);
 			led_push();
 		}
 
@@ -152,12 +148,8 @@ ISR(TIMER0_COMPA_vect)
 			{
 				if(center_btn_counter < 40)
 					center_btn_counter++;
-
-				if(center_btn_counter == 30)
-					PAIRING = 1;
-
 			}
-			else if(center_btn_counter > 30) //parowanko
+			else if(center_btn_counter > 30) 
 			{
 				center_btn_counter = 0;
 			}
@@ -181,13 +173,7 @@ ISR(TIMER0_COMPA_vect)
 	            eeprom_write_byte((uint8_t*)8, (uint8_t)BRIGHTNESS);
 	            while (!eeprom_is_ready());
 	            eeprom_write_byte((uint8_t*)16, (uint8_t)TIME);
-	            while (!eeprom_is_ready());
-	            eeprom_write_byte((uint8_t*)24, (uint8_t)SYG_ID[1]);
-	            while (!eeprom_is_ready());
-	            eeprom_write_byte((uint8_t*)32, (uint8_t)SYG_ID[2]);
-	            while (!eeprom_is_ready());
-	            eeprom_write_byte((uint8_t*)40, (uint8_t)SYG_ID[3]);
-	            while (!eeprom_is_ready());
+	            while (!eeprom_is_ready());	            
 	            center_btn_counter = 0;
 				GO_TO_POWER_DOWN = 1;
 			} 
@@ -371,7 +357,6 @@ ISR(TIMER0_COMPA_vect)
 						_delay_ms(300);
 						led_set(6, 0);
 						led_push();
-						send_command(0x02, 0x02);
 						THEFT_ALARM = 2;
 					}
 				

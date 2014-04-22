@@ -2,7 +2,6 @@
 #include "led.h"
 #include "speaker.h"
 #include "pot.h"
-#include "comm.h"
 #include <avr/power.h>
 #include <avr/sleep.h>
 #include <avr/io.h> 
