@@ -37,7 +37,7 @@ unsigned volatile char next_fast = 0, fast_cnter = 0, fast_timer = 0;
 
 volatile unsigned int silent_times[] = {1350, 1800, 2700, 3600, 5400};
 unsigned static volatile char sens_tab[] = {10, 20, 30, 45, 60, 80};
-unsigned static volatile char fast_tab[] = {12, 10, 9, 6, 4, 2};
+unsigned static volatile char fast_tab[] = {20, 35, 50, 70, 85, 100};
 //od kontakrona
 unsigned volatile char kon1 = 0;
 unsigned volatile char dir = 0;
@@ -196,7 +196,7 @@ ISR(TIMER0_COMPA_vect)
 					silent_time = 0;
 			}
 			
-			if(fast_timer < 20)
+			if(fast_timer < 3)
 				fast_timer++;
 			else
 			{
@@ -432,6 +432,7 @@ ISR(PCINT0_vect) // CENTER_BTN
 	wake_up_after_sleep(1);
 }
 
+volatile char iFast = 0;
 void kontaktron_check()
 {
 
@@ -446,13 +447,16 @@ void kontaktron_check()
 			 
         if(bot == oor)
      	   kon1 = KONTAKTR_BOT;
+		   
+		if(fast_cnter < 200)				
+			fast_cnter++;
 
         if(pos2 > sens_tab[SENSIVITY])
         {
              pos2 = 0;
 
 
-                if(kometa_cnter == 0 || branie_dir != dir)
+				if(kometa_cnter == 0 || branie_dir != dir)
                 {               
             		kometa_cnter = 1;
 					branie_dir = dir;
@@ -462,11 +466,19 @@ void kontaktron_check()
 
 				if(TIME == 1 || silent_time == 0)
 				{	
-					if(fast_cnter < 200)				
-						fast_cnter++;
-				  
 					if(next_fast == 1)
-						play_speaker(50, branie_dir, 1);					
+					{
+						if(iFast == 0)
+						{
+							iFast = 1;
+							play_speaker(50, branie_dir, 1);					
+						}
+						else
+						{
+							iFast = 0;
+							play_speaker(50, branie_dir, 0);	
+						}
+					}
 					else
 						play_speaker(50, branie_dir, 0);
 
