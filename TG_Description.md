@@ -1,3 +1,5 @@
+## General scope
+# Scope
 ```c
 //this is code
 for(;;)
