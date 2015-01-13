@@ -1,8 +1,8 @@
-'''c
+```c
 //this is code
 for(;;)
 {
   int mama = 4;
 }
-'''
-This is descirpiont
+```
+This is description
