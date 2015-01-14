@@ -16,8 +16,7 @@ Tone lengths sould be experimentaly delimitted individually for every tone, to c
 
 Tone sequence goes as follows:
 
-  Tone[x] & Volume[x] -> Tone[y] & Volume[y] -> Tone[x] & Volume[x] -> Tone[y] & Volume[y] -> (...)
-  (Tone length 1 [ms)   (Tone length 2 [ms])   (Tone length 1 [ms])   (Tone length 2 [ms])
+  `Tone[x]` & `Volume[x]` -> `Tone[y]` & `Volume[y]` -> `Tone[x]` & `Volume[x]` -> `Tone[y]` & `Volume[y]` -> (...)
  
 ## Presented solution
 
@@ -100,11 +99,11 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_TRG_BRK_USART2_TX_IRQHandler, 19)
   }
 }
 ```
-First if (BuzzerTrigger == 1) branch handles events triggered by starting the tone - stting up volume, and frequency, fireing up the PWM output.
+First `if (BuzzerTrigger == 1)` branch handles events triggered by starting the tone - stting up volume, and frequency, fireing up the PWM output.
 
-Second else if (BuzzerState == ENABLE) handles tone length check by checking if (BuzzerCounter >= BuzzerTime) condition and turns off the tone after given time.
+Second `else if (BuzzerState == ENABLE)` handles tone length check by checking if `(BuzzerCounter >= BuzzerTime)` condition and turns off the tone after given time.
 
-Third, pure else branch is just a sanity check.
+Third, pure `else` branch is just a sanity check.
 
 Params array stores all paramters. Importat ones in this scope, are:
 Params[1] - First tone's frequency
